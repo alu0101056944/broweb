@@ -9,7 +9,13 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Videos } from './collections/Videos'
+import { Categories } from './collections/Categories'
+import { Media } from './collections/Media'
+import { Pages } from './collections/Pages'
+import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
+import { Footer } from './Footer/config'
+import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -69,9 +75,9 @@ export default buildConfig({
       },
     },
   }),
-  collections: [Videos, Users],
+  collections: [Pages, Posts, Media, Categories, Users, Videos],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [],
+  globals: [Header, Footer],
   plugins: [
     ...plugins,
     // storage-adapter-placeholder
