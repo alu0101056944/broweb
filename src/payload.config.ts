@@ -1,3 +1,5 @@
+import fs from 'fs'
+
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
 
@@ -6,13 +8,8 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
-import { Categories } from './collections/Categories'
-import { Media } from './collections/Media'
-import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
+import { Videos } from './collections/Videos'
 import { Users } from './collections/Users'
-import { Footer } from './Footer/config'
-import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -61,15 +58,20 @@ export default buildConfig({
   editor: defaultLexical,
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.POSTGRES_URL || '',
+      host: process.env.POSTGRES_HOST,
+      port: parseInt(process.env.POSTGRES_PORT || '5432', 10), // Ensure port is a number
+      user: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DATABASE,
       ssl: {
-        rejectUnauthorized: false, 
+        rejectUnauthorized: true,
+        ca: process.env.POSTGRES_CA,
       },
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [Videos],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [],
   plugins: [
     ...plugins,
     // storage-adapter-placeholder
