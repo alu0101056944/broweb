@@ -69,7 +69,7 @@ export default buildConfig({
       },
     },
   }),
-  collections: [Videos],
+  collections: [Videos, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [],
   plugins: [

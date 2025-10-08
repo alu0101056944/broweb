@@ -5,9 +5,9 @@ import { authenticated } from '../../access/authenticated'
 export const Videos: CollectionConfig = {
   slug: 'videos',
   access: {
+    read: () => true,
     create: authenticated,
     delete: authenticated,
-    read: authenticated,
     update: authenticated,
   },
   admin: {
