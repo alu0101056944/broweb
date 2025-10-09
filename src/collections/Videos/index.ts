@@ -26,19 +26,15 @@ export const Videos: CollectionConfig = {
     },
   },
   admin: {
-    defaultColumns: ['videoId', 'description', 'thumbnailUrl', 'updatedAt'],
+    defaultColumns: ['videoUrl', 'description', 'updatedAt'],
     useAsTitle: 'description',
   },
   fields: [
     {
-      name: 'videoId',
+      name: 'videoUrl',
       type: 'text',
       required: true,
       unique: true,
-    },
-    {
-      name: 'thumbnailUrl',
-      type: 'text',
     },
     {
       name: 'description',

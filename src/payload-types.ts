@@ -376,7 +376,7 @@ export interface Category {
 export interface User {
   id: number;
   name?: string | null;
-  role: 'admin' | 'editor';
+  role: 'admin' | 'user';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -743,8 +743,7 @@ export interface Form {
  */
 export interface Video {
   id: number;
-  videoId: string;
-  thumbnailUrl?: string | null;
+  videoUrl: string;
   description?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -1316,8 +1315,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "videos_select".
  */
 export interface VideosSelect<T extends boolean = true> {
-  videoId?: T;
-  thumbnailUrl?: T;
+  videoUrl?: T;
   description?: T;
   updatedAt?: T;
   createdAt?: T;
