@@ -13,7 +13,7 @@ export const Users: CollectionConfig = {
   },
   admin: {
     defaultColumns: ['name', 'email'],
-    useAsTitle: 'name',
+    useAsTitle: 'email',
   },
   auth: {
     cookies: {
@@ -26,6 +26,25 @@ export const Users: CollectionConfig = {
       name: 'name',
       type: 'text',
     },
+    {
+      name: 'role',
+      type: 'select',
+      options: [
+        { label: 'Admin', value: 'admin' },
+        { label: 'User', value: 'user' },
+      ],
+      defaultValue: 'user',
+      required: true,
+      // TODO remove comments after all admins have account
+      // access: {
+      //   create: ({ req }) => req.user?.role === 'admin',
+      //   read: () => true,
+      //   update: ({ req }) => req.user?.role === 'admin'
+      // },
+      // admin: {
+      //   condition: ({ user }) => user.role === 'admin'
+      // }
+    }
   ],
   timestamps: true,
 }
