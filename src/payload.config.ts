@@ -1,5 +1,3 @@
-import fs from 'fs'
-
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
 
