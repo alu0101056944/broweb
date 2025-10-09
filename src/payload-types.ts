@@ -104,11 +104,13 @@ export interface Config {
   };
   globals: {
     'about-content': AboutContent;
+    'contact-content': ContactContent;
     header: Header;
     footer: Footer;
   };
   globalsSelect: {
     'about-content': AboutContentSelect<false> | AboutContentSelect<true>;
+    'contact-content': ContactContentSelect<false> | ContactContentSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
   };
@@ -1603,6 +1605,30 @@ export interface AboutContent {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-content".
+ */
+export interface ContactContent {
+  id: number;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header".
  */
 export interface Header {
@@ -1664,6 +1690,16 @@ export interface Footer {
  * via the `definition` "about-content_select".
  */
 export interface AboutContentSelect<T extends boolean = true> {
+  content?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-content_select".
+ */
+export interface ContactContentSelect<T extends boolean = true> {
   content?: T;
   updatedAt?: T;
   createdAt?: T;
