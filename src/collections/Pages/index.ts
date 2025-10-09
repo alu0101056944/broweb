@@ -56,6 +56,7 @@ export const Pages: CollectionConfig<'pages'> = {
         req,
       }),
     useAsTitle: 'title',
+    hidden: true,
   },
   fields: [
     {

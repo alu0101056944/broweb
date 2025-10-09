@@ -67,6 +67,7 @@ export const Posts: CollectionConfig<'posts'> = {
         req,
       }),
     useAsTitle: 'title',
+    hidden: true,
   },
   fields: [
     {

@@ -42,6 +42,9 @@ export const plugins: Plugin[] = [
           return field
         })
       },
+      access: {
+        read: () => false,
+      },
       hooks: {
         afterChange: [revalidateRedirects],
       },
@@ -60,6 +63,9 @@ export const plugins: Plugin[] = [
       payment: false,
     },
     formOverrides: {
+      admin: {
+        hidden: true
+      },
       fields: ({ defaultFields }) => {
         return defaultFields.map((field) => {
           if ('name' in field && field.name === 'confirmationMessage') {
@@ -80,6 +86,11 @@ export const plugins: Plugin[] = [
         })
       },
     },
+    formSubmissionOverrides:{
+      access: {
+        read: () => false,
+      },
+    }
   }),
   searchPlugin({
     collections: ['posts'],
@@ -87,6 +98,9 @@ export const plugins: Plugin[] = [
     searchOverrides: {
       fields: ({ defaultFields }) => {
         return [...defaultFields, ...searchFields]
+      },
+      access: {
+        read: () => false,
       },
     },
   }),
