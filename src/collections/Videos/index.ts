@@ -26,7 +26,7 @@ export const Videos: CollectionConfig = {
     },
   },
   admin: {
-    defaultColumns: ['videoUrl', 'description', 'updatedAt'],
+    defaultColumns: ['videoUrl', 'description', 'priority', 'updatedAt'],
     useAsTitle: 'description',
   },
   fields: [

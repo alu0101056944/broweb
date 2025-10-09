@@ -749,6 +749,10 @@ export interface Video {
   id: number;
   videoUrl: string;
   description?: string | null;
+  /**
+   * Lower numbers appear first. Leave blank to send to the end of the list.
+   */
+  priority?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1297,6 +1301,7 @@ export interface CategoriesSelect<T extends boolean = true> {
 export interface VideosSelect<T extends boolean = true> {
   videoUrl?: T;
   description?: T;
+  priority?: T;
   updatedAt?: T;
   createdAt?: T;
 }
