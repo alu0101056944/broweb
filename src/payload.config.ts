@@ -30,6 +30,9 @@ export default buildConfig({
       // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below.
       beforeDashboard: ['@/components/BeforeDashboard'],
+      afterNavLinks: [
+        './components/DeployButton/DeployButton',
+      ],
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -100,4 +103,40 @@ export default buildConfig({
     },
     tasks: [],
   },
+  endpoints: [
+    {
+      path: '/deploy-frontend',
+      method: 'post',
+      handler: async (req) => {
+        if (!req.user || req.user.collection !== 'users') {
+          return Response.json({ error: 'You are not authorized to perform this action.' });
+        }
+
+        const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL;
+        if (!deployHookUrl) {
+          return Response.json({ error: 'Deploy hook URL is not configured.' });
+        }
+
+        try {
+          const response = await fetch(deployHookUrl, { method: 'POST' });
+          if (!response.ok) {
+            throw new Error(`Vercel API responded with status ${response.status}`);
+          }
+          const result = await response.json();
+
+          // 4. Send a success response back to the admin panel
+          return Response.json({ message: 'Deployment triggered successfully!',
+              vercelResponse: result });
+        } catch (error) {
+          let errorMessage = 'Failed to trigger deployment.'
+
+          if (error instanceof Error) {
+            errorMessage = error.message;
+          }
+
+          return Response.json({ error: error, details: errorMessage });
+        }
+      },
+    },
+  ],
 })
