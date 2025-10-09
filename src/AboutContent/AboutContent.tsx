@@ -1,4 +1,4 @@
-// src/globals/PageContent.tsx
+// src/globals/AboutContent.tsx
 
 import { GlobalConfig } from 'payload'
 

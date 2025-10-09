@@ -20,6 +20,8 @@ const collections: CollectionSlug[] = [
   'search',
 ]
 
+const globals: GlobalSlug[] = ['header', 'footer', 'about-content', 'contact-content']
+
 // Next.js revalidation errors are normal when seeding the database without a server running
 // i.e. running `yarn seed` locally instead of using the admin UI within an active app
 // The app is not running to revalidate the pages and so the API routes are not available
@@ -33,12 +35,27 @@ export const seed = async ({
 }): Promise<void> => {
   payload.logger.info('Seeding database...')
 
+  await payload.updateGlobal({
+    slug: 'about-content',
+    data: {
+      content: null,
+    },
+    context: { disableRevalidate: true },
+  })
+
+  await payload.updateGlobal({
+    slug: 'contact-content',
+    data: {
+      content: null,
+    },
+    context: { disableRevalidate: true },
+  })
+
   // we need to clear the media directory before seeding
   // as well as the collections and globals
   // this is because while `yarn seed` drops the database
   // the custom `/api/seed` endpoint does not
   payload.logger.info(`— Clearing collections and globals...`)
-
 
   await Promise.all(
     collections.map((collection) => payload.db.deleteMany({ collection, req, where: {} })),
@@ -329,24 +346,12 @@ export const seed = async ({
       },
       context: { disableRevalidate: true },
     }),
-    payload.updateGlobal({
-      slug: 'about-content',
-      data: {
-        content: null,
-      },
-      context: { disableRevalidate: true },
-    }),
-    payload.updateGlobal({
-      slug: 'contact-content',
-      data: {
-        content: null,
-      },
-      context: { disableRevalidate: true },
-    })
+
   ])
 
   payload.logger.info('Seeded database successfully!')
 }
+
 
 async function fetchFileByURL(url: string): Promise<File> {
   const res = await fetch(url, {
