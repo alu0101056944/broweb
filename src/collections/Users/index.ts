@@ -2,17 +2,22 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 
+const ROLES = {
+  ADMIN: 'admin',
+  USER: 'user',
+} as const;
+
 export const Users: CollectionConfig = {
   slug: 'users',
   access: {
-    admin: authenticated,
+    admin: ({ req: { user } }) => user?.role === ROLES.ADMIN,
     create: authenticated,
-    delete: authenticated,
+    delete: ({ req: { user } }) => user?.role === ROLES.ADMIN,
     read: authenticated,
     update: authenticated,
   },
   admin: {
-    defaultColumns: ['name', 'email'],
+    defaultColumns: ['name', 'email', 'role'],
     useAsTitle: 'email',
   },
   auth: {
@@ -30,21 +35,22 @@ export const Users: CollectionConfig = {
       name: 'role',
       type: 'select',
       options: [
-        { label: 'Admin', value: 'admin' },
-        { label: 'User', value: 'user' },
+        { label: 'Admin', value: ROLES.ADMIN },
+        { label: 'User', value: ROLES.USER },
       ],
-      defaultValue: 'user',
+      defaultValue: ROLES.USER,
       required: true,
-      // TODO remove comments after all admins have account
-      // access: {
-      //   create: ({ req }) => req.user?.role === 'admin',
-      //   read: () => true,
-      //   update: ({ req }) => req.user?.role === 'admin'
-      // },
-      // admin: {
-      //   condition: ({ user }) => user.role === 'admin'
-      // }
-    }
+      access: {
+        create: ({ req }) => req.user?.role === ROLES.ADMIN,
+        update: ({ req }) => req.user?.role === ROLES.ADMIN,
+        read: () => true,
+      },
+
+      admin: {
+        condition: ({ user }) => user.role === ROLES.ADMIN,
+        position: 'sidebar',
+      },
+    },
   ],
   timestamps: true,
 }

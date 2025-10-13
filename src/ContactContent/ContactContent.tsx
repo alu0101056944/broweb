@@ -9,6 +9,7 @@ import {
   StrikethroughFeature,
   UnorderedListFeature,
   OrderedListFeature,
+  AlignFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
@@ -32,6 +33,7 @@ const RichTextBlock: Block = {
           StrikethroughFeature(),
           UnorderedListFeature(),
           OrderedListFeature(),
+          AlignFeature(),
         ],
       }),
     },
@@ -190,6 +192,7 @@ const TextWithImageBlock: Block = {
           StrikethroughFeature(),
           UnorderedListFeature(),
           OrderedListFeature(),
+          AlignFeature(),
         ],
       }),
     },
