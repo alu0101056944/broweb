@@ -1,6 +1,6 @@
 // src/globals/ContactInfo.ts
 
-import { GlobalConfig } from 'payload/types'
+import { GlobalConfig } from 'payload'
 
 export const ContactInfo: GlobalConfig = {
   slug: 'contact-info',
