@@ -1636,6 +1636,10 @@ export interface ImageBlock {
    * If not specified the height will be as big as possible within it's container.
    */
   height?: number | null;
+  /**
+   * Choose how to align the image within the content column.
+   */
+  alignment?: ('left' | 'center' | 'right') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'imageBlock';
@@ -1741,6 +1745,7 @@ export interface ImageBlockSelect<T extends boolean = true> {
   altText?: T;
   width?: T;
   height?: T;
+  alignment?: T;
   id?: T;
   blockName?: T;
 }

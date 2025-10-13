@@ -82,7 +82,31 @@ const ImageBlock: Block = {
         step: 1,
         position: 'sidebar',
       }
-    }
+    },
+    {
+      name: 'alignment',
+      label: 'Image Alignment',
+      type: 'select',
+      defaultValue: 'center',
+      options: [
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Center',
+          value: 'center',
+        },
+        {
+          label: 'Right',
+          value: 'right',
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Choose how to align the image within the content column.',
+      }
+    },
   ],
 }
 
