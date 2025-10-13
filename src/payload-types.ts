@@ -1628,6 +1628,14 @@ export interface ImageBlock {
    * Describe the image for screen readers and SEO.
    */
   altText: string;
+  /**
+   * If not specified the width will be as big as possible within it's container.
+   */
+  width?: number | null;
+  /**
+   * If not specified the height will be as big as possible within it's container.
+   */
+  height?: number | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'imageBlock';
@@ -1731,6 +1739,8 @@ export interface RichTextBlockSelect<T extends boolean = true> {
 export interface ImageBlockSelect<T extends boolean = true> {
   imageUrl?: T;
   altText?: T;
+  width?: T;
+  height?: T;
   id?: T;
   blockName?: T;
 }

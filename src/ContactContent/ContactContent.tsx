@@ -59,7 +59,7 @@ const ImageBlock: Block = {
     },
     {
       name: 'width',
-      label: 'Width of the image',
+      label: 'Width of the image. Leave at -1 not to specify.',
       type: 'number',
       required: false,
       defaultValue: -1,
@@ -72,7 +72,7 @@ const ImageBlock: Block = {
     },
     {
       name: 'height',
-      label: 'Height of the image',
+      label: 'Height of the image. Leave at -1 not to specify.',
       type: 'number',
       required: false,
       defaultValue: -1,
