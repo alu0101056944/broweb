@@ -56,6 +56,32 @@ const ImageBlock: Block = {
       admin: {
         description: 'Describe the image for screen readers and SEO.'
       }
+    },
+    {
+      name: 'width',
+      label: 'Width of the image',
+      type: 'number',
+      required: false,
+      defaultValue: -1,
+      admin: {
+        description: 'If not specified the width will be as big as possible within it\'s container.',
+        placeholder: 'ejemplo: 128, 200, 764...',
+        step: 1,
+        position: 'sidebar',
+      }
+    },
+    {
+      name: 'height',
+      label: 'Height of the image',
+      type: 'number',
+      required: false,
+      defaultValue: -1,
+      admin: {
+        description: 'If not specified the height will be as big as possible within it\'s container.',
+        placeholder: 'ejemplo: 480, 501, 652...',
+        step: 1,
+        position: 'sidebar',
+      }
     }
   ],
 }
