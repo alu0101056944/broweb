@@ -1590,7 +1590,16 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface AboutContent {
   id: number;
-  content?: {
+  content?: (RichTextBlock | ImageBlock)[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock".
+ */
+export interface RichTextBlock {
+  richText?: {
     root: {
       type: string;
       children: {
@@ -1605,8 +1614,23 @@ export interface AboutContent {
     };
     [k: string]: unknown;
   } | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'richTextBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock".
+ */
+export interface ImageBlock {
+  imageUrl: string;
+  /**
+   * Describe the image for screen readers and SEO.
+   */
+  altText: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'imageBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1614,21 +1638,7 @@ export interface AboutContent {
  */
 export interface ContactContent {
   id: number;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  content?: (RichTextBlock | ImageBlock)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1695,17 +1705,46 @@ export interface Footer {
  * via the `definition` "about-content_select".
  */
 export interface AboutContentSelect<T extends boolean = true> {
-  content?: T;
+  content?:
+    | T
+    | {
+        richTextBlock?: T | RichTextBlockSelect<T>;
+        imageBlock?: T | ImageBlockSelect<T>;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock_select".
+ */
+export interface RichTextBlockSelect<T extends boolean = true> {
+  richText?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock_select".
+ */
+export interface ImageBlockSelect<T extends boolean = true> {
+  imageUrl?: T;
+  altText?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-content_select".
  */
 export interface ContactContentSelect<T extends boolean = true> {
-  content?: T;
+  content?:
+    | T
+    | {
+        richTextBlock?: T | RichTextBlockSelect<T>;
+        imageBlock?: T | ImageBlockSelect<T>;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
