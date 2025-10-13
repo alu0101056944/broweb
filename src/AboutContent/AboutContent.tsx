@@ -9,7 +9,6 @@ import {
   StrikethroughFeature,
   UnorderedListFeature,
   OrderedListFeature,
-  LinkFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
@@ -26,6 +25,9 @@ export const AboutContent: GlobalConfig = {
       label: 'Formated text, images, other content for the "About" Page',
       type: 'richText',
       editor: lexicalEditor({
+        admin: {
+          placeholder: 'Escribir aquí el contenido a mostrar...'
+        },
         features: ({ defaultFeatures }) => [
           ...defaultFeatures,
           BoldFeature(),
@@ -34,7 +36,6 @@ export const AboutContent: GlobalConfig = {
           StrikethroughFeature(),
           UnorderedListFeature(),
           OrderedListFeature(),
-          LinkFeature(),
         ],
       }),
     },

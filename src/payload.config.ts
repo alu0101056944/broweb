@@ -6,6 +6,7 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
+import CustomHeaderActions from './components/CustomHeader/CustomHeader'
 import { ContactContent } from './ContactContent/ContactContent'
 import { AboutContent } from './AboutContent/AboutContent'
 import { Videos } from './collections/Videos'
@@ -35,6 +36,9 @@ export default buildConfig({
       afterNavLinks: [
         './components/DeployButton/DeployButton',
       ],
+      actions: [
+        './components/CustomHeader/CustomHeader',
+      ]
     },
     importMap: {
       baseDir: path.resolve(dirname),
