@@ -1590,7 +1590,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface AboutContent {
   id: number;
-  content?: (RichTextBlock | ImageBlock)[] | null;
+  content?: (RichTextBlock | ImageBlock | TextWithImageBlock)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1646,11 +1646,52 @@ export interface ImageBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textWithImageBlock".
+ */
+export interface TextWithImageBlock {
+  imageUrl: string;
+  /**
+   * Describe the image for screen readers and SEO.
+   */
+  altText: string;
+  /**
+   * If not specified the width will be as big as possible within it's container.
+   */
+  width?: number | null;
+  /**
+   * If not specified the height will be as big as possible within it's container.
+   */
+  height?: number | null;
+  /**
+   * Choose how to align the image relative to the text.
+   */
+  alignment?: ('left' | 'right') | null;
+  richText?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'textWithImageBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-content".
  */
 export interface ContactContent {
   id: number;
-  content?: (RichTextBlock | ImageBlock)[] | null;
+  content?: (RichTextBlock | ImageBlock | TextWithImageBlock)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1722,6 +1763,7 @@ export interface AboutContentSelect<T extends boolean = true> {
     | {
         richTextBlock?: T | RichTextBlockSelect<T>;
         imageBlock?: T | ImageBlockSelect<T>;
+        textWithImageBlock?: T | TextWithImageBlockSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1751,6 +1793,20 @@ export interface ImageBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textWithImageBlock_select".
+ */
+export interface TextWithImageBlockSelect<T extends boolean = true> {
+  imageUrl?: T;
+  altText?: T;
+  width?: T;
+  height?: T;
+  alignment?: T;
+  richText?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-content_select".
  */
 export interface ContactContentSelect<T extends boolean = true> {
@@ -1759,6 +1815,7 @@ export interface ContactContentSelect<T extends boolean = true> {
     | {
         richTextBlock?: T | RichTextBlockSelect<T>;
         imageBlock?: T | ImageBlockSelect<T>;
+        textWithImageBlock?: T | TextWithImageBlockSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;

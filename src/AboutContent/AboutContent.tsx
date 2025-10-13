@@ -159,7 +159,7 @@ const TextWithImageBlock: Block = {
       name: 'alignment',
       label: 'Image Alignment',
       type: 'select',
-      defaultValue: 'center',
+      defaultValue: 'right',
       options: [
         {
           label: 'Left',
