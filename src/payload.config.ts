@@ -6,6 +6,7 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { Music } from './collections/Music'
 import { ContactInfo } from './ContactInfo/ContactInfo'
 import { ContactContent } from './ContactContent/ContactContent'
 import { AboutContent } from './AboutContent/AboutContent'
@@ -82,7 +83,7 @@ export default buildConfig({
       },
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Videos, Users],
+  collections: [Pages, Posts, Media, Categories, Videos, Music, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [AboutContent, ContactContent, ContactInfo, Header, Footer],
   plugins: [

@@ -105,12 +105,14 @@ export interface Config {
   globals: {
     'about-content': AboutContent;
     'contact-content': ContactContent;
+    'contact-info': ContactInfo;
     header: Header;
     footer: Footer;
   };
   globalsSelect: {
     'about-content': AboutContentSelect<false> | AboutContentSelect<true>;
     'contact-content': ContactContentSelect<false> | ContactContentSelect<true>;
+    'contact-info': ContactInfoSelect<false> | ContactInfoSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
   };
@@ -380,7 +382,7 @@ export interface Category {
 export interface User {
   id: number;
   name?: string | null;
-  role: 'admin' | 'user';
+  role?: ('admin' | 'user') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1697,6 +1699,19 @@ export interface ContactContent {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-info".
+ */
+export interface ContactInfo {
+  id: number;
+  /**
+   * This email address will be displayed on the contact page.
+   */
+  email: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header".
  */
 export interface Header {
@@ -1817,6 +1832,16 @@ export interface ContactContentSelect<T extends boolean = true> {
         imageBlock?: T | ImageBlockSelect<T>;
         textWithImageBlock?: T | TextWithImageBlockSelect<T>;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-info_select".
+ */
+export interface ContactInfoSelect<T extends boolean = true> {
+  email?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
