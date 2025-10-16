@@ -72,6 +72,7 @@ export interface Config {
     media: Media;
     categories: Category;
     videos: Video;
+    music: Music;
     users: User;
     redirects: Redirect;
     forms: Form;
@@ -89,6 +90,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     videos: VideosSelect<false> | VideosSelect<true>;
+    music: MusicSelect<false> | MusicSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -760,6 +762,21 @@ export interface Video {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "music".
+ */
+export interface Music {
+  id: number;
+  videoUrl: string;
+  description?: string | null;
+  /**
+   * Lower numbers appear first. Leave blank to send to the end of the list.
+   */
+  priority?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -950,6 +967,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'videos';
         value: number | Video;
+      } | null)
+    | ({
+        relationTo: 'music';
+        value: number | Music;
       } | null)
     | ({
         relationTo: 'users';
@@ -1301,6 +1322,17 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "videos_select".
  */
 export interface VideosSelect<T extends boolean = true> {
+  videoUrl?: T;
+  description?: T;
+  priority?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "music_select".
+ */
+export interface MusicSelect<T extends boolean = true> {
   videoUrl?: T;
   description?: T;
   priority?: T;

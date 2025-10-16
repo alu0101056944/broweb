@@ -10,6 +10,8 @@ import {
   UnorderedListFeature,
   OrderedListFeature,
   AlignFeature,
+  FixedToolbarFeature,
+  IndentFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
@@ -34,6 +36,8 @@ const RichTextBlock: Block = {
           UnorderedListFeature(),
           OrderedListFeature(),
           AlignFeature(),
+          FixedToolbarFeature(),
+          IndentFeature(),
         ],
       }),
     },
@@ -193,6 +197,8 @@ const TextWithImageBlock: Block = {
           UnorderedListFeature(),
           OrderedListFeature(),
           AlignFeature(),
+          FixedToolbarFeature(),
+          IndentFeature(),
         ],
       }),
     },
