@@ -757,6 +757,11 @@ export interface Video {
    * Lower numbers appear first. Leave blank to send to the end of the list.
    */
   priority?: number | null;
+  useThumbnailUrl?: boolean | null;
+  /**
+   * Set a custom thumbnail URL. If disabled, youtube's thumbnail Url is used.
+   */
+  thumbnailUrl?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -772,6 +777,11 @@ export interface Music {
    * Lower numbers appear first. Leave blank to send to the end of the list.
    */
   priority?: number | null;
+  useThumbnailUrl?: boolean | null;
+  /**
+   * Set a custom thumbnail URL. If disabled, youtube's thumbnail Url is used.
+   */
+  thumbnailUrl?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1325,6 +1335,8 @@ export interface VideosSelect<T extends boolean = true> {
   videoUrl?: T;
   description?: T;
   priority?: T;
+  useThumbnailUrl?: T;
+  thumbnailUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1336,6 +1348,8 @@ export interface MusicSelect<T extends boolean = true> {
   videoUrl?: T;
   description?: T;
   priority?: T;
+  useThumbnailUrl?: T;
+  thumbnailUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }
