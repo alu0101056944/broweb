@@ -204,6 +204,86 @@ const TextWithImageBlock: Block = {
   ],
 }
 
+const TextWithVideo : Block = {
+  slug: 'textWithVideo',
+  interfaceName: 'textWithVideo',
+  fields: [
+    {
+      name: 'videoUrl',
+      type: 'text',
+      label: 'Video URL',
+      required: true,
+    },
+    {
+      name: 'videoWidth',
+      label: 'Width of the image',
+      type: 'number',
+      required: false,
+      defaultValue: -1,
+      admin: {
+        description: 'If not specified the width will be as big as possible within it\'s container.',
+        placeholder: 'ejemplo: 128, 200, 764...',
+        step: 1,
+        position: 'sidebar',
+      }
+    },
+    {
+      name: 'videoHeight',
+      label: 'Height of the image',
+      type: 'number',
+      required: false,
+      defaultValue: -1,
+      admin: {
+        description: 'If not specified the height will be as big as possible within it\'s container.',
+        placeholder: 'ejemplo: 480, 501, 652...',
+        step: 1,
+        position: 'sidebar',
+      }
+    },
+    {
+      name: 'videoAlignment',
+      label: 'Image Alignment',
+      type: 'select',
+      defaultValue: 'right',
+      options: [
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Right',
+          value: 'right',
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Choose how to align the video relative to the text.',
+      }
+    },
+    {
+      name: 'description',
+      type: 'richText',
+      editor: lexicalEditor({
+        admin: {
+          placeholder: 'Escribir aquí el contenido a mostrar...',
+        },
+        features: ({ defaultFeatures }) => [
+          ...defaultFeatures,
+          BoldFeature(),
+          ItalicFeature(),
+          UnderlineFeature(),
+          StrikethroughFeature(),
+          UnorderedListFeature(),
+          OrderedListFeature(),
+          AlignFeature(),
+          FixedToolbarFeature(),
+          IndentFeature(),
+        ],
+      }),
+    },
+  ]
+}
+
 export const TextPage : Field = {
   name: 'content',
   label: 'Page Content',
@@ -213,5 +293,6 @@ export const TextPage : Field = {
     RichTextBlock,
     ImageBlock,
     TextWithImageBlock,
+    TextWithVideo,
   ],
 }
