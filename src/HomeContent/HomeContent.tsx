@@ -4,8 +4,8 @@ import { GlobalConfig } from 'payload'
 
 import { TextPage } from '../TextPage/TextPage'
 
-export const ContactContent: GlobalConfig = {
-  slug: 'contact-content',
+export const HomeContent: GlobalConfig = {
+  slug: 'home',
   access: {
     read: () => true,
   },
