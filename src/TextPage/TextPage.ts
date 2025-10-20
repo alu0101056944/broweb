@@ -1,14 +1,13 @@
-
-import { Block, Field } from 'payload'
+import { Block, Field, Validate } from 'payload'
 
 export interface TextWithVideo {
-  videoUrl: string;
-  isShort: boolean;
-  shortScale: number;
-  videoWidth: number;
-  videoHeight: number;
-  videoAlignment: string;
-  description: string;
+  videoUrl: string
+  isShort: boolean
+  shortScale: number
+  videoWidth: number
+  videoHeight: number
+  videoAlignment: string
+  description: string
 }
 
 import {
@@ -69,8 +68,8 @@ const ImageBlock: Block = {
       type: 'text',
       required: true,
       admin: {
-        description: 'Describe the image for screen readers and SEO.'
-      }
+        description: 'Describe the image for screen readers and SEO.',
+      },
     },
     {
       name: 'width',
@@ -79,11 +78,11 @@ const ImageBlock: Block = {
       required: false,
       defaultValue: -1,
       admin: {
-        description: 'If not specified the width will be as big as possible within it\'s container.',
+        description: "If not specified the width will be as big as possible within it's container.",
         placeholder: 'ejemplo: 128, 200, 764...',
         step: 1,
         position: 'sidebar',
-      }
+      },
     },
     {
       name: 'height',
@@ -92,11 +91,12 @@ const ImageBlock: Block = {
       required: false,
       defaultValue: -1,
       admin: {
-        description: 'If not specified the height will be as big as possible within it\'s container.',
+        description:
+          "If not specified the height will be as big as possible within it's container.",
         placeholder: 'ejemplo: 480, 501, 652...',
         step: 1,
         position: 'sidebar',
-      }
+      },
     },
     {
       name: 'alignment',
@@ -120,7 +120,7 @@ const ImageBlock: Block = {
       admin: {
         position: 'sidebar',
         description: 'Choose how to align the image within the content column.',
-      }
+      },
     },
   ],
 }
@@ -141,8 +141,8 @@ const TextWithImageBlock: Block = {
       type: 'text',
       required: true,
       admin: {
-        description: 'Describe the image for screen readers and SEO.'
-      }
+        description: 'Describe the image for screen readers and SEO.',
+      },
     },
     {
       name: 'width',
@@ -151,11 +151,11 @@ const TextWithImageBlock: Block = {
       required: false,
       defaultValue: -1,
       admin: {
-        description: 'If not specified the width will be as big as possible within it\'s container.',
+        description: "If not specified the width will be as big as possible within it's container.",
         placeholder: 'ejemplo: 128, 200, 764...',
         step: 1,
         position: 'sidebar',
-      }
+      },
     },
     {
       name: 'height',
@@ -164,11 +164,12 @@ const TextWithImageBlock: Block = {
       required: false,
       defaultValue: -1,
       admin: {
-        description: 'If not specified the height will be as big as possible within it\'s container.',
+        description:
+          "If not specified the height will be as big as possible within it's container.",
         placeholder: 'ejemplo: 480, 501, 652...',
         step: 1,
         position: 'sidebar',
-      }
+      },
     },
     {
       name: 'alignment',
@@ -188,7 +189,7 @@ const TextWithImageBlock: Block = {
       admin: {
         position: 'sidebar',
         description: 'Choose how to align the image relative to the text.',
-      }
+      },
     },
     {
       name: 'richText',
@@ -214,7 +215,7 @@ const TextWithImageBlock: Block = {
   ],
 }
 
-const TextWithVideo : Block = {
+const TextWithVideo: Block = {
   slug: 'textWithVideo',
   interfaceName: 'textWithVideo',
   fields: [
@@ -226,7 +227,7 @@ const TextWithVideo : Block = {
     },
     {
       name: 'isShort',
-      label: 'It\'s a short video.',
+      label: "It's a shorts video.",
       type: 'checkbox',
       defaultValue: false,
     },
@@ -234,48 +235,45 @@ const TextWithVideo : Block = {
       name: 'shortScale',
       label: 'Display scale for the short. 100 is default.',
       type: 'number',
-      required: false,
       defaultValue: 100,
       admin: {
-        condition: (data: Partial<TextWithVideo>) => data.isShort === true,
-        description: 'If not specified the scale will be 100% also known' +
-          ' as default.',
+        condition: (data, siblingData: Partial<TextWithVideo>) => siblingData.isShort === true,
+        description: 'If not specified the scale will be 100% also known' + ' as default.',
         placeholder: 'ejemplo: 100, 200, 150...',
         step: 1,
         position: 'sidebar',
-      }
+      },
     },
     {
       name: 'videoWidth',
       label: 'Width of the image',
       type: 'number',
-      required: false,
       defaultValue: -1,
       admin: {
-        condition: (data: Partial<TextWithVideo>) => data.isShort === false,
-        description: 'If not specified the width will be as big as possible within it\'s container.',
+        condition: (data, siblingData: Partial<TextWithVideo>) => siblingData.isShort === false,
+        description: "If not specified the width will be as big as possible within it's container.",
         placeholder: 'ejemplo: 128, 200, 764...',
         step: 1,
         position: 'sidebar',
-      }
+      },
     },
     {
       name: 'videoHeight',
       label: 'Height of the image',
       type: 'number',
-      required: false,
       defaultValue: -1,
       admin: {
-        condition: (data: Partial<TextWithVideo>) => data.isShort === false,
-        description: 'If not specified the height will be as big as possible within it\'s container.',
+        condition: (data, siblingData: Partial<TextWithVideo>) => siblingData.isShort === false,
+        description:
+          "If not specified the height will be as big as possible within it's container.",
         placeholder: 'ejemplo: 480, 501, 652...',
         step: 1,
         position: 'sidebar',
-      }
+      },
     },
     {
       name: 'videoAlignment',
-      label: 'Image Alignment',
+      label: 'Video Alignment',
       type: 'select',
       defaultValue: 'right',
       options: [
@@ -291,7 +289,7 @@ const TextWithVideo : Block = {
       admin: {
         position: 'sidebar',
         description: 'Choose how to align the video relative to the text.',
-      }
+      },
     },
     {
       name: 'description',
@@ -314,18 +312,13 @@ const TextWithVideo : Block = {
         ],
       }),
     },
-  ]
+  ],
 }
 
-export const TextPage : Field = {
+export const TextPage: Field = {
   name: 'content',
   label: 'Page Content',
   type: 'blocks',
   minRows: 1,
-  blocks: [
-    RichTextBlock,
-    ImageBlock,
-    TextWithImageBlock,
-    TextWithVideo,
-  ],
+  blocks: [RichTextBlock, ImageBlock, TextWithImageBlock, TextWithVideo],
 }
