@@ -105,6 +105,7 @@ export interface Config {
     defaultIDType: number;
   };
   globals: {
+    home: Home;
     'about-content': AboutContent;
     'contact-content': ContactContent;
     'contact-info': ContactInfo;
@@ -112,6 +113,7 @@ export interface Config {
     footer: Footer;
   };
   globalsSelect: {
+    home: HomeSelect<false> | HomeSelect<true>;
     'about-content': AboutContentSelect<false> | AboutContentSelect<true>;
     'contact-content': ContactContentSelect<false> | ContactContentSelect<true>;
     'contact-info': ContactInfoSelect<false> | ContactInfoSelect<true>;
@@ -1634,11 +1636,11 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "about-content".
+ * via the `definition` "home".
  */
-export interface AboutContent {
+export interface Home {
   id: number;
-  content?: (RichTextBlock | ImageBlock | TextWithImageBlock)[] | null;
+  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1735,11 +1737,63 @@ export interface TextWithImageBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textWithVideo".
+ */
+export interface TextWithVideo {
+  videoUrl: string;
+  isShort?: boolean | null;
+  /**
+   * If not specified the scale will be 100% also known as default.
+   */
+  shortScale?: number | null;
+  /**
+   * If not specified the width will be as big as possible within it's container.
+   */
+  videoWidth?: number | null;
+  /**
+   * If not specified the height will be as big as possible within it's container.
+   */
+  videoHeight?: number | null;
+  /**
+   * Choose how to align the video relative to the text.
+   */
+  videoAlignment?: ('left' | 'right') | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'textWithVideo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-content".
+ */
+export interface AboutContent {
+  id: number;
+  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo)[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-content".
  */
 export interface ContactContent {
   id: number;
-  content?: (RichTextBlock | ImageBlock | TextWithImageBlock)[] | null;
+  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1816,15 +1870,16 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "about-content_select".
+ * via the `definition` "home_select".
  */
-export interface AboutContentSelect<T extends boolean = true> {
+export interface HomeSelect<T extends boolean = true> {
   content?:
     | T
     | {
         richTextBlock?: T | RichTextBlockSelect<T>;
         imageBlock?: T | ImageBlockSelect<T>;
         textWithImageBlock?: T | TextWithImageBlockSelect<T>;
+        textWithVideo?: T | TextWithVideoSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1868,6 +1923,38 @@ export interface TextWithImageBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textWithVideo_select".
+ */
+export interface TextWithVideoSelect<T extends boolean = true> {
+  videoUrl?: T;
+  isShort?: T;
+  shortScale?: T;
+  videoWidth?: T;
+  videoHeight?: T;
+  videoAlignment?: T;
+  description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-content_select".
+ */
+export interface AboutContentSelect<T extends boolean = true> {
+  content?:
+    | T
+    | {
+        richTextBlock?: T | RichTextBlockSelect<T>;
+        imageBlock?: T | ImageBlockSelect<T>;
+        textWithImageBlock?: T | TextWithImageBlockSelect<T>;
+        textWithVideo?: T | TextWithVideoSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-content_select".
  */
 export interface ContactContentSelect<T extends boolean = true> {
@@ -1877,6 +1964,7 @@ export interface ContactContentSelect<T extends boolean = true> {
         richTextBlock?: T | RichTextBlockSelect<T>;
         imageBlock?: T | ImageBlockSelect<T>;
         textWithImageBlock?: T | TextWithImageBlockSelect<T>;
+        textWithVideo?: T | TextWithVideoSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;

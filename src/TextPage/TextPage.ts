@@ -1,6 +1,16 @@
 
 import { Block, Field } from 'payload'
 
+export interface TextWithVideo {
+  videoUrl: string;
+  isShort: boolean;
+  shortScale: number;
+  videoWidth: number;
+  videoHeight: number;
+  videoAlignment: string;
+  description: string;
+}
+
 import {
   BoldFeature,
   ItalicFeature,
@@ -215,12 +225,34 @@ const TextWithVideo : Block = {
       required: true,
     },
     {
+      name: 'isShort',
+      label: 'It\'s a short video.',
+      type: 'checkbox',
+      defaultValue: false,
+    },
+    {
+      name: 'shortScale',
+      label: 'Display scale for the short. 100 is default.',
+      type: 'number',
+      required: false,
+      defaultValue: 100,
+      admin: {
+        condition: (data: Partial<TextWithVideo>) => data.isShort === true,
+        description: 'If not specified the scale will be 100% also known' +
+          ' as default.',
+        placeholder: 'ejemplo: 100, 200, 150...',
+        step: 1,
+        position: 'sidebar',
+      }
+    },
+    {
       name: 'videoWidth',
       label: 'Width of the image',
       type: 'number',
       required: false,
       defaultValue: -1,
       admin: {
+        condition: (data: Partial<TextWithVideo>) => data.isShort === false,
         description: 'If not specified the width will be as big as possible within it\'s container.',
         placeholder: 'ejemplo: 128, 200, 764...',
         step: 1,
@@ -234,6 +266,7 @@ const TextWithVideo : Block = {
       required: false,
       defaultValue: -1,
       admin: {
+        condition: (data: Partial<TextWithVideo>) => data.isShort === false,
         description: 'If not specified the height will be as big as possible within it\'s container.',
         placeholder: 'ejemplo: 480, 501, 652...',
         step: 1,
