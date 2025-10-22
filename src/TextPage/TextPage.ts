@@ -145,33 +145,6 @@ const TextWithImageBlock: Block = {
       },
     },
     {
-      name: 'width',
-      label: 'Width of the image',
-      type: 'number',
-      required: false,
-      defaultValue: -1,
-      admin: {
-        description: "If not specified the width will be as big as possible within it's container.",
-        placeholder: 'ejemplo: 128, 200, 764...',
-        step: 1,
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'height',
-      label: 'Height of the image',
-      type: 'number',
-      required: false,
-      defaultValue: -1,
-      admin: {
-        description:
-          "If not specified the height will be as big as possible within it's container.",
-        placeholder: 'ejemplo: 480, 501, 652...',
-        step: 1,
-        position: 'sidebar',
-      },
-    },
-    {
       name: 'alignment',
       label: 'Image Alignment',
       type: 'select',
@@ -189,6 +162,69 @@ const TextWithImageBlock: Block = {
       admin: {
         position: 'sidebar',
         description: 'Choose how to align the image relative to the text.',
+      },
+    },
+    {
+      name: 'horizontalTextSpace',
+      label: 'Horizontal text spacing.',
+      type: 'number',
+      defaultValue: 25,
+      max: 100,
+      min: 0,
+      required: false,
+      admin: {
+        description: '% of horizontal space that the text takes relative to the video.',
+        placeholder: 'ejemplo: 25, 50, 100...',
+        step: 1,
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'imagePadding',
+      label: "Left/Center/Right image padding in it's own cell",
+      type: 'select',
+      defaultValue: 'center',
+      options: [
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Center',
+          value: 'center',
+        },
+        {
+          label: 'Right',
+          value: 'Right',
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'usePercentageBasedPadding',
+      label: 'Use percentage based padding instead of left/center/right padding',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'percentageImagePadding',
+      label: 'Image left/right padding (right alignment/left alignment).',
+      type: 'number',
+      defaultValue: 50,
+      max: 100,
+      min: 0,
+      required: false,
+      admin: {
+        condition: (_, siblingData) => siblingData.usePercentageBasedPadding === true,
+        description: '% of empty margin space of the image to leave relative to the text.',
+        placeholder: 'ejemplo: 25, 50, 100...',
+        step: 1,
+        position: 'sidebar',
       },
     },
     {
@@ -226,52 +262,6 @@ const TextWithVideo: Block = {
       required: true,
     },
     {
-      name: 'isShort',
-      label: "It's a shorts video.",
-      type: 'checkbox',
-      defaultValue: false,
-    },
-    {
-      name: 'shortScale',
-      label: 'Display scale for the short. 100 is default.',
-      type: 'number',
-      defaultValue: 100,
-      admin: {
-        condition: (data, siblingData: Partial<TextWithVideo>) => siblingData.isShort === true,
-        description: 'If not specified the scale will be 100% also known' + ' as default.',
-        placeholder: 'ejemplo: 100, 200, 150...',
-        step: 1,
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'videoWidth',
-      label: 'Width of the image',
-      type: 'number',
-      defaultValue: -1,
-      admin: {
-        condition: (data, siblingData: Partial<TextWithVideo>) => siblingData.isShort === false,
-        description: "If not specified the width will be as big as possible within it's container.",
-        placeholder: 'ejemplo: 128, 200, 764...',
-        step: 1,
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'videoHeight',
-      label: 'Height of the image',
-      type: 'number',
-      defaultValue: -1,
-      admin: {
-        condition: (data, siblingData: Partial<TextWithVideo>) => siblingData.isShort === false,
-        description:
-          "If not specified the height will be as big as possible within it's container.",
-        placeholder: 'ejemplo: 480, 501, 652...',
-        step: 1,
-        position: 'sidebar',
-      },
-    },
-    {
       name: 'videoAlignment',
       label: 'Video Alignment',
       type: 'select',
@@ -289,6 +279,69 @@ const TextWithVideo: Block = {
       admin: {
         position: 'sidebar',
         description: 'Choose how to align the video relative to the text.',
+      },
+    },
+    {
+      name: 'horizontalTextSpace',
+      label: 'Horizontal text spacing.',
+      type: 'number',
+      defaultValue: 25,
+      max: 100,
+      min: 0,
+      required: false,
+      admin: {
+        description: '% of horizontal space that the text takes relative to the video.',
+        placeholder: 'ejemplo: 25, 50, 100...',
+        step: 1,
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'videoPadding',
+      label: "Left/Center/Right video padding in it's own cell",
+      type: 'select',
+      defaultValue: 'center',
+      options: [
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Center',
+          value: 'center',
+        },
+        {
+          label: 'Right',
+          value: 'Right',
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'usePercentageBasedPadding',
+      label: 'Use percentage based padding instead of left/center/right padding',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'percentageVideoPadding',
+      label: 'Video left/right padding (right alignment/left alignment).',
+      type: 'number',
+      defaultValue: 50,
+      max: 100,
+      min: 0,
+      required: false,
+      admin: {
+        condition: (_, siblingData) => siblingData.usePercentageBasedPadding === true,
+        description: '% of empty margin space of the video to leave relative to the text.',
+        placeholder: 'ejemplo: 25, 50, 100...',
+        step: 1,
+        position: 'sidebar',
       },
     },
     {

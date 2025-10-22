@@ -1705,17 +1705,19 @@ export interface TextWithImageBlock {
    */
   altText: string;
   /**
-   * If not specified the width will be as big as possible within it's container.
-   */
-  width?: number | null;
-  /**
-   * If not specified the height will be as big as possible within it's container.
-   */
-  height?: number | null;
-  /**
    * Choose how to align the image relative to the text.
    */
   alignment?: ('left' | 'right') | null;
+  /**
+   * % of horizontal space that the text takes relative to the video.
+   */
+  horizontalTextSpace?: number | null;
+  imagePadding?: ('left' | 'center' | 'Right') | null;
+  usePercentageBasedPadding?: boolean | null;
+  /**
+   * % of empty margin space of the image to leave relative to the text.
+   */
+  percentageImagePadding?: number | null;
   richText?: {
     root: {
       type: string;
@@ -1741,23 +1743,20 @@ export interface TextWithImageBlock {
  */
 export interface TextWithVideo {
   videoUrl: string;
-  isShort?: boolean | null;
-  /**
-   * If not specified the scale will be 100% also known as default.
-   */
-  shortScale?: number | null;
-  /**
-   * If not specified the width will be as big as possible within it's container.
-   */
-  videoWidth?: number | null;
-  /**
-   * If not specified the height will be as big as possible within it's container.
-   */
-  videoHeight?: number | null;
   /**
    * Choose how to align the video relative to the text.
    */
   videoAlignment?: ('left' | 'right') | null;
+  /**
+   * % of horizontal space that the text takes relative to the video.
+   */
+  horizontalTextSpace?: number | null;
+  videoPadding?: ('left' | 'center' | 'Right') | null;
+  usePercentageBasedPadding?: boolean | null;
+  /**
+   * % of empty margin space of the video to leave relative to the text.
+   */
+  percentageVideoPadding?: number | null;
   description?: {
     root: {
       type: string;
@@ -1914,9 +1913,11 @@ export interface ImageBlockSelect<T extends boolean = true> {
 export interface TextWithImageBlockSelect<T extends boolean = true> {
   imageUrl?: T;
   altText?: T;
-  width?: T;
-  height?: T;
   alignment?: T;
+  horizontalTextSpace?: T;
+  imagePadding?: T;
+  usePercentageBasedPadding?: T;
+  percentageImagePadding?: T;
   richText?: T;
   id?: T;
   blockName?: T;
@@ -1927,11 +1928,11 @@ export interface TextWithImageBlockSelect<T extends boolean = true> {
  */
 export interface TextWithVideoSelect<T extends boolean = true> {
   videoUrl?: T;
-  isShort?: T;
-  shortScale?: T;
-  videoWidth?: T;
-  videoHeight?: T;
   videoAlignment?: T;
+  horizontalTextSpace?: T;
+  videoPadding?: T;
+  usePercentageBasedPadding?: T;
+  percentageVideoPadding?: T;
   description?: T;
   id?: T;
   blockName?: T;
