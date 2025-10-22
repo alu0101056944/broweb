@@ -1679,13 +1679,20 @@ export interface ImageBlock {
    */
   altText: string;
   /**
-   * If not specified the width will be as big as possible within it's container.
+   * If not specified the width will be that of the original image.
    */
   width?: number | null;
   /**
-   * If not specified the height will be as big as possible within it's container.
+   * If not specified the height will be that of the original image.
    */
   height?: number | null;
+  /**
+   * Actual width and height are automatically detected and saved on publish.
+   */
+  imageDimensions?: {
+    width?: number | null;
+    height?: number | null;
+  };
   /**
    * Choose how to align the image within the content column.
    */
@@ -1712,12 +1719,19 @@ export interface TextWithImageBlock {
    * % of horizontal space that the text takes relative to the video.
    */
   horizontalTextSpace?: number | null;
-  imagePadding?: ('left' | 'center' | 'Right') | null;
   usePercentageBasedPadding?: boolean | null;
+  imagePadding?: ('left' | 'center' | 'Right') | null;
   /**
    * % of empty margin space of the image to leave relative to the text.
    */
   percentageImagePadding?: number | null;
+  /**
+   * Actual width and height are automatically detected and saved on publish.
+   */
+  imageDimensions?: {
+    width?: number | null;
+    height?: number | null;
+  };
   richText?: {
     root: {
       type: string;
@@ -1751,8 +1765,8 @@ export interface TextWithVideo {
    * % of horizontal space that the text takes relative to the video.
    */
   horizontalTextSpace?: number | null;
-  videoPadding?: ('left' | 'center' | 'Right') | null;
   usePercentageBasedPadding?: boolean | null;
+  videoPadding?: ('left' | 'center' | 'Right') | null;
   /**
    * % of empty margin space of the video to leave relative to the text.
    */
@@ -1902,6 +1916,12 @@ export interface ImageBlockSelect<T extends boolean = true> {
   altText?: T;
   width?: T;
   height?: T;
+  imageDimensions?:
+    | T
+    | {
+        width?: T;
+        height?: T;
+      };
   alignment?: T;
   id?: T;
   blockName?: T;
@@ -1915,9 +1935,15 @@ export interface TextWithImageBlockSelect<T extends boolean = true> {
   altText?: T;
   alignment?: T;
   horizontalTextSpace?: T;
-  imagePadding?: T;
   usePercentageBasedPadding?: T;
+  imagePadding?: T;
   percentageImagePadding?: T;
+  imageDimensions?:
+    | T
+    | {
+        width?: T;
+        height?: T;
+      };
   richText?: T;
   id?: T;
   blockName?: T;
@@ -1930,8 +1956,8 @@ export interface TextWithVideoSelect<T extends boolean = true> {
   videoUrl?: T;
   videoAlignment?: T;
   horizontalTextSpace?: T;
-  videoPadding?: T;
   usePercentageBasedPadding?: T;
+  videoPadding?: T;
   percentageVideoPadding?: T;
   description?: T;
   id?: T;

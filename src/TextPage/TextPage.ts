@@ -1,14 +1,6 @@
-import { Block, Field, Validate } from 'payload'
+import { Block, Field, GlobalBeforeChangeHook } from 'payload'
 
-export interface TextWithVideo {
-  videoUrl: string
-  isShort: boolean
-  shortScale: number
-  videoWidth: number
-  videoHeight: number
-  videoAlignment: string
-  description: string
-}
+import sharp from 'sharp'
 
 import {
   BoldFeature,
@@ -23,6 +15,67 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+
+import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+
+export type RichTextBlockType = {
+  label: string
+  blockType: 'richTextBlock'
+  blockName?: string
+  richText: SerializedEditorState
+}
+
+export type ImageBlockType = {
+  label: string
+  blockType: 'imageBlock'
+  blockName?: string
+  imageUrl: string
+  altText: string
+  width?: number
+  height?: number
+  imageDimensions?: {
+    width: number | null
+    height: number | null
+  }
+  alignment?: 'left' | 'center' | 'right'
+}
+
+export type TextWithImageBlockType = {
+  label: string
+  blockType: 'textWithImageBlock'
+  blockName?: string
+  imageUrl: string
+  altText: string
+  alignment?: 'left' | 'right'
+  horizontalTextSpace?: number
+  imagePadding?: 'left' | 'center' | 'right'
+  usePercentageBasedPadding?: boolean
+  percentageImagePadding?: number
+  imageDimensions?: {
+    width: number | null
+    height: number | null
+  }
+  richText: SerializedEditorState
+}
+
+export type TextWithVideoType = {
+  label: string
+  blockType: 'textWithVideo'
+  blockName?: string
+  videoUrl: string
+  videoAlignment?: 'left' | 'right'
+  horizontalTextSpace?: number
+  videoPadding?: 'left' | 'center' | 'right'
+  usePercentageBasedPadding?: boolean
+  percentageVideoPadding?: number
+  description: SerializedEditorState
+}
+
+export type ContentBlockType =
+  | RichTextBlockType
+  | ImageBlockType
+  | TextWithImageBlockType
+  | TextWithVideoType
 
 const RichTextBlock: Block = {
   slug: 'richTextBlock',
@@ -73,12 +126,12 @@ const ImageBlock: Block = {
     },
     {
       name: 'width',
-      label: 'Width of the image. Leave at -1 not to specify.',
+      label: 'Final width of the image. Leave at -1 not to specify.',
       type: 'number',
       required: false,
       defaultValue: -1,
       admin: {
-        description: "If not specified the width will be as big as possible within it's container.",
+        description: 'If not specified the width will be that of the original image.',
         placeholder: 'ejemplo: 128, 200, 764...',
         step: 1,
         position: 'sidebar',
@@ -86,17 +139,35 @@ const ImageBlock: Block = {
     },
     {
       name: 'height',
-      label: 'Height of the image. Leave at -1 not to specify.',
+      label: 'Final height of the image. Leave at -1 not to specify.',
       type: 'number',
       required: false,
       defaultValue: -1,
       admin: {
-        description:
-          "If not specified the height will be as big as possible within it's container.",
+        description: 'If not specified the height will be that of the original image.',
         placeholder: 'ejemplo: 480, 501, 652...',
         step: 1,
         position: 'sidebar',
       },
+    },
+    {
+      name: 'imageDimensions',
+      type: 'group',
+      label: 'Image Dimensions (auto-populated)',
+      admin: {
+        readOnly: true,
+        description: 'Actual width and height are automatically detected and saved on publish.',
+      },
+      fields: [
+        {
+          name: 'width',
+          type: 'number',
+        },
+        {
+          name: 'height',
+          type: 'number',
+        },
+      ],
     },
     {
       name: 'alignment',
@@ -180,6 +251,15 @@ const TextWithImageBlock: Block = {
       },
     },
     {
+      name: 'usePercentageBasedPadding',
+      label: 'Use percentage based padding instead of left/center/right padding',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'imagePadding',
       label: "Left/Center/Right image padding in it's own cell",
       type: 'select',
@@ -199,15 +279,7 @@ const TextWithImageBlock: Block = {
         },
       ],
       admin: {
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'usePercentageBasedPadding',
-      label: 'Use percentage based padding instead of left/center/right padding',
-      type: 'checkbox',
-      defaultValue: false,
-      admin: {
+        condition: (_, siblingData) => siblingData.usePercentageBasedPadding === false,
         position: 'sidebar',
       },
     },
@@ -226,6 +298,25 @@ const TextWithImageBlock: Block = {
         step: 1,
         position: 'sidebar',
       },
+    },
+    {
+      name: 'imageDimensions',
+      type: 'group',
+      label: 'Image Dimensions (auto-populated)',
+      admin: {
+        readOnly: true,
+        description: 'Actual width and height are automatically detected and saved on publish.',
+      },
+      fields: [
+        {
+          name: 'width',
+          type: 'number',
+        },
+        {
+          name: 'height',
+          type: 'number',
+        },
+      ],
     },
     {
       name: 'richText',
@@ -254,6 +345,7 @@ const TextWithImageBlock: Block = {
 const TextWithVideo: Block = {
   slug: 'textWithVideo',
   interfaceName: 'textWithVideo',
+
   fields: [
     {
       name: 'videoUrl',
@@ -297,6 +389,15 @@ const TextWithVideo: Block = {
       },
     },
     {
+      name: 'usePercentageBasedPadding',
+      label: 'Use percentage based padding instead of left/center/right padding',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'videoPadding',
       label: "Left/Center/Right video padding in it's own cell",
       type: 'select',
@@ -316,15 +417,7 @@ const TextWithVideo: Block = {
         },
       ],
       admin: {
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'usePercentageBasedPadding',
-      label: 'Use percentage based padding instead of left/center/right padding',
-      type: 'checkbox',
-      defaultValue: false,
-      admin: {
+        condition: (_, siblingData) => siblingData.usePercentageBasedPadding === false,
         position: 'sidebar',
       },
     },
@@ -374,4 +467,58 @@ export const TextPage: Field = {
   type: 'blocks',
   minRows: 1,
   blocks: [RichTextBlock, ImageBlock, TextWithImageBlock, TextWithVideo],
+}
+
+export const addRemoteImageDimensions: GlobalBeforeChangeHook = async ({ data, req }) => {
+  if (!data.content) {
+    return data
+  }
+
+  const updated_data = await Promise.all(
+    data.content.map(async (block: ContentBlockType) => {
+      if (
+        (block.blockType === 'textWithImageBlock' || block.blockType === 'imageBlock') &&
+        block.imageUrl
+      ) {
+        try {
+          const response = await fetch(block.imageUrl)
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch image. Status: ${response.status}`)
+          }
+
+          const imageBuffer = Buffer.from(await response.arrayBuffer())
+          const metadata = await sharp(imageBuffer).metadata()
+
+          return {
+            ...block,
+            imageDimensions: {
+              width: metadata.width,
+              height: metadata.height,
+            },
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            req.payload.logger.error(
+              `[TextWithImage Hook] Error getting dimensions for ${data.imageUrl}: ${error.message}`,
+            )
+          }
+
+          return {
+            ...block,
+            imageDimensions: {
+              width: null,
+              height: null,
+            },
+          }
+        }
+      }
+      return block
+    }),
+  )
+
+  return {
+    ...data,
+    content: updated_data,
+  }
 }

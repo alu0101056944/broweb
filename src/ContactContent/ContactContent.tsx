@@ -2,14 +2,15 @@
 
 import { GlobalConfig } from 'payload'
 
-import { TextPage } from '../TextPage/TextPage'
+import { TextPage, addRemoteImageDimensions } from '../TextPage/TextPage'
 
 export const ContactContent: GlobalConfig = {
   slug: 'contact-content',
   access: {
     read: () => true,
   },
-  fields: [
-    TextPage,
-  ],
+  hooks: {
+    beforeChange: [addRemoteImageDimensions],
+  },
+  fields: [TextPage],
 }
