@@ -5,13 +5,13 @@ import { authenticated } from '../../access/authenticated'
 const ROLES = {
   ADMIN: 'admin',
   USER: 'user',
-} as const;
+} as const
 
 export const Users: CollectionConfig = {
   slug: 'users',
   access: {
     admin: ({ req: { user } }) => user?.role === ROLES.ADMIN,
-    create: authenticated,
+    create: ({ req: { user } }) => user?.role === ROLES.ADMIN,
     delete: ({ req: { user } }) => user?.role === ROLES.ADMIN,
     read: authenticated,
     update: authenticated,
@@ -23,8 +23,8 @@ export const Users: CollectionConfig = {
   auth: {
     cookies: {
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'None': 'Lax',
-    }
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+    },
   },
   fields: [
     {
