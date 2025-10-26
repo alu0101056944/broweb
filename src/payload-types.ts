@@ -1640,7 +1640,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Home {
   id: number;
-  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo)[] | null;
+  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo | MediaGridBlock | VideoBlock)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1792,11 +1792,56 @@ export interface TextWithVideo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaGridBlock".
+ */
+export interface MediaGridBlock {
+  title?: string | null;
+  /**
+   * Select how many videos per row.
+   */
+  columns?: ('2' | '3' | '4') | null;
+  /**
+   * Select videos to display.
+   */
+  mediaItems: (
+    | {
+        relationTo: 'videos';
+        value: number | Video;
+      }
+    | {
+        relationTo: 'music';
+        value: number | Music;
+      }
+  )[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock".
+ */
+export interface VideoBlock {
+  /**
+   * e.g., https://www.youtube.com/watch?v=...
+   */
+  videoUrl: string;
+  caption?: string | null;
+  /**
+   * Choose how to align the video within the content column.
+   */
+  alignment?: ('left' | 'center' | 'right') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'videoBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about-content".
  */
 export interface AboutContent {
   id: number;
-  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo)[] | null;
+  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo | MediaGridBlock | VideoBlock)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1806,7 +1851,7 @@ export interface AboutContent {
  */
 export interface ContactContent {
   id: number;
-  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo)[] | null;
+  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo | MediaGridBlock | VideoBlock)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1893,6 +1938,8 @@ export interface HomeSelect<T extends boolean = true> {
         imageBlock?: T | ImageBlockSelect<T>;
         textWithImageBlock?: T | TextWithImageBlockSelect<T>;
         textWithVideo?: T | TextWithVideoSelect<T>;
+        mediaGrid?: T | MediaGridBlockSelect<T>;
+        videoBlock?: T | VideoBlockSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1965,6 +2012,28 @@ export interface TextWithVideoSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaGridBlock_select".
+ */
+export interface MediaGridBlockSelect<T extends boolean = true> {
+  title?: T;
+  columns?: T;
+  mediaItems?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock_select".
+ */
+export interface VideoBlockSelect<T extends boolean = true> {
+  videoUrl?: T;
+  caption?: T;
+  alignment?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about-content_select".
  */
 export interface AboutContentSelect<T extends boolean = true> {
@@ -1975,6 +2044,8 @@ export interface AboutContentSelect<T extends boolean = true> {
         imageBlock?: T | ImageBlockSelect<T>;
         textWithImageBlock?: T | TextWithImageBlockSelect<T>;
         textWithVideo?: T | TextWithVideoSelect<T>;
+        mediaGrid?: T | MediaGridBlockSelect<T>;
+        videoBlock?: T | VideoBlockSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1992,6 +2063,8 @@ export interface ContactContentSelect<T extends boolean = true> {
         imageBlock?: T | ImageBlockSelect<T>;
         textWithImageBlock?: T | TextWithImageBlockSelect<T>;
         textWithVideo?: T | TextWithVideoSelect<T>;
+        mediaGrid?: T | MediaGridBlockSelect<T>;
+        videoBlock?: T | VideoBlockSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;

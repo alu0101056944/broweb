@@ -18,6 +18,21 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 
+import { VideoType } from '../collections/Videos'
+import { MusicType } from '../collections/Music'
+
+export type MediaGridBlockType = {
+  label: string
+  blockType: 'mediaGrid'
+  blockName?: string
+  title?: string
+  columns?: '2' | '3' | '4'
+  mediaItems: Array<{
+    relationTo: 'videos' | 'music'
+    value: VideoType | MusicType | string
+  }>
+}
+
 export type RichTextBlockType = {
   label: string
   blockType: 'richTextBlock'
@@ -71,11 +86,22 @@ export type TextWithVideoType = {
   description: SerializedEditorState
 }
 
+export type VideoBlockType = {
+  label: string
+  blockType: 'videoBlock'
+  blockName?: string
+  videoUrl: string
+  caption?: string
+  alignment?: 'left' | 'center' | 'right'
+}
+
 export type ContentBlockType =
   | RichTextBlockType
   | ImageBlockType
   | TextWithImageBlockType
   | TextWithVideoType
+  | MediaGridBlockType
+  | VideoBlockType
 
 const RichTextBlock: Block = {
   slug: 'richTextBlock',
@@ -86,7 +112,7 @@ const RichTextBlock: Block = {
       type: 'richText',
       editor: lexicalEditor({
         admin: {
-          placeholder: 'Escribir aquí el contenido a mostrar...',
+          placeholder: 'Write here the content to show...',
         },
         features: ({ defaultFeatures }) => [
           ...defaultFeatures,
@@ -239,7 +265,7 @@ const TextWithImageBlock: Block = {
       name: 'horizontalTextSpace',
       label: 'Horizontal text spacing.',
       type: 'number',
-      defaultValue: 25,
+      defaultValue: 75,
       max: 100,
       min: 0,
       required: false,
@@ -323,7 +349,7 @@ const TextWithImageBlock: Block = {
       type: 'richText',
       editor: lexicalEditor({
         admin: {
-          placeholder: 'Escribir aquí el contenido a mostrar...',
+          placeholder: 'Write here the content to show...',
         },
         features: ({ defaultFeatures }) => [
           ...defaultFeatures,
@@ -377,7 +403,7 @@ const TextWithVideo: Block = {
       name: 'horizontalTextSpace',
       label: 'Horizontal text spacing.',
       type: 'number',
-      defaultValue: 25,
+      defaultValue: 75,
       max: 100,
       min: 0,
       required: false,
@@ -442,7 +468,7 @@ const TextWithVideo: Block = {
       type: 'richText',
       editor: lexicalEditor({
         admin: {
-          placeholder: 'Escribir aquí el contenido a mostrar...',
+          placeholder: 'Write here the content to show...',
         },
         features: ({ defaultFeatures }) => [
           ...defaultFeatures,
@@ -461,12 +487,102 @@ const TextWithVideo: Block = {
   ],
 }
 
+const MediaGridBlock: Block = {
+  slug: 'mediaGrid',
+  interfaceName: 'MediaGridBlock',
+  fields: [
+    {
+      name: 'title',
+      label: 'Grid title (Optional)',
+      type: 'text',
+    },
+    {
+      name: 'columns',
+      label: 'Column number',
+      type: 'select',
+      defaultValue: '3',
+      options: [
+        { label: 'Two', value: '2' },
+        { label: 'Three', value: '3' },
+        { label: 'Four', value: '4' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Select how many videos per row.',
+      },
+    },
+    {
+      name: 'mediaItems',
+      label: 'Select Videos or Music',
+      type: 'relationship',
+      relationTo: ['videos', 'music'],
+      hasMany: true,
+      required: true,
+      admin: {
+        description: 'Select videos to display.',
+      },
+    },
+  ],
+}
+
+const VideoBlock: Block = {
+  slug: 'videoBlock',
+  interfaceName: 'VideoBlock',
+  fields: [
+    {
+      name: 'videoUrl',
+      label: 'Video URL',
+      type: 'text',
+      required: true,
+      admin: {
+        description: 'e.g., https://www.youtube.com/watch?v=...',
+      },
+    },
+    {
+      name: 'caption',
+      label: 'Caption (Optional)',
+      type: 'text',
+    },
+    {
+      name: 'alignment',
+      label: 'Video Alignment',
+      type: 'select',
+      defaultValue: 'center',
+      options: [
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Center',
+          value: 'center',
+        },
+        {
+          label: 'Right',
+          value: 'right',
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Choose how to align the video within the content column.',
+      },
+    },
+  ],
+}
+
 export const TextPage: Field = {
   name: 'content',
   label: 'Page Content',
   type: 'blocks',
   minRows: 1,
-  blocks: [RichTextBlock, ImageBlock, TextWithImageBlock, TextWithVideo],
+  blocks: [
+    RichTextBlock,
+    ImageBlock,
+    TextWithImageBlock,
+    TextWithVideo,
+    MediaGridBlock,
+    VideoBlock,
+  ],
 }
 
 export const addRemoteImageDimensions: GlobalBeforeChangeHook = async ({ data, req }) => {
