@@ -603,7 +603,7 @@ const TextWithHTML: Block = {
       required: true,
       admin: {
         description:
-          'Paste a HTML snippet here. Be cautious as this will be rendered directly on the page.',
+          'Paste a HTML snippet here. Be cautious as this will be embedded directly on the page.',
         language: 'html',
       },
     },
