@@ -95,6 +95,26 @@ export type VideoBlockType = {
   alignment?: 'left' | 'center' | 'right'
 }
 
+export type TextWithHTMLType = {
+  label: string
+  blockType: 'textWithHtml'
+  blockName?: string
+  htmlContent: string
+  htmlAlignment?: 'left' | 'right'
+  horizontalTextSpace?: number
+  htmlPadding?: 'left' | 'center' | 'right'
+  usePercentageBasedPadding?: boolean
+  percentageHtmlPadding?: number
+  description: SerializedEditorState
+}
+
+export type HtmlBlockType = {
+  label: string
+  blockType: 'htmlBlock'
+  blockName?: string
+  htmlContent: string
+}
+
 export type ContentBlockType =
   | RichTextBlockType
   | ImageBlockType
@@ -102,6 +122,8 @@ export type ContentBlockType =
   | TextWithVideoType
   | MediaGridBlockType
   | VideoBlockType
+  | TextWithHTMLType
+  | HtmlBlockType
 
 const RichTextBlock: Block = {
   slug: 'richTextBlock',
@@ -570,6 +592,147 @@ const VideoBlock: Block = {
   ],
 }
 
+const TextWithHTML: Block = {
+  slug: 'textWithHTML',
+  interfaceName: 'textWithHTML',
+  fields: [
+    {
+      name: 'htmlContent',
+      label: 'HTML Content',
+      type: 'code',
+      required: true,
+      admin: {
+        description:
+          'Paste a HTML snippet here. Be cautious as this will be rendered directly on the page.',
+        language: 'html',
+      },
+    },
+    {
+      name: 'htmlAlignment',
+      label: 'HTML Alignment',
+      type: 'select',
+      defaultValue: 'right',
+      options: [
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Right',
+          value: 'right',
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Choose how to align the html relative to the text.',
+      },
+    },
+    {
+      name: 'horizontalTextSpace',
+      label: 'Horizontal text spacing.',
+      type: 'number',
+      defaultValue: 75,
+      max: 100,
+      min: 0,
+      required: false,
+      admin: {
+        description: '% of horizontal space that the text takes relative to the video.',
+        placeholder: 'ejemplo: 25, 50, 100...',
+        step: 1,
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'usePercentageBasedPadding',
+      label: 'Use percentage based padding instead of left/center/right padding',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'htmlPadding',
+      label: "Left/Center/Right html padding in it's own cell",
+      type: 'select',
+      defaultValue: 'center',
+      options: [
+        {
+          label: 'Left',
+          value: 'left',
+        },
+        {
+          label: 'Center',
+          value: 'center',
+        },
+        {
+          label: 'Right',
+          value: 'Right',
+        },
+      ],
+      admin: {
+        condition: (_, siblingData) => siblingData.usePercentageBasedPadding === false,
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'percentageVideoPadding',
+      label: 'Video left/right padding (right alignment/left alignment).',
+      type: 'number',
+      defaultValue: 50,
+      max: 100,
+      min: 0,
+      required: false,
+      admin: {
+        condition: (_, siblingData) => siblingData.usePercentageBasedPadding === true,
+        description: '% of empty margin space of the video to leave relative to the text.',
+        placeholder: 'ejemplo: 25, 50, 100...',
+        step: 1,
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'description',
+      type: 'richText',
+      editor: lexicalEditor({
+        admin: {
+          placeholder: 'Write here the content to show...',
+        },
+        features: ({ defaultFeatures }) => [
+          ...defaultFeatures,
+          BoldFeature(),
+          ItalicFeature(),
+          UnderlineFeature(),
+          StrikethroughFeature(),
+          UnorderedListFeature(),
+          OrderedListFeature(),
+          AlignFeature(),
+          FixedToolbarFeature(),
+          IndentFeature(),
+        ],
+      }),
+    },
+  ],
+}
+
+const HtmlBlock: Block = {
+  slug: 'htmlBlock',
+  interfaceName: 'HtmlBlock',
+  fields: [
+    {
+      name: 'htmlContent',
+      label: 'HTML Content',
+      type: 'code',
+      required: true,
+      admin: {
+        description:
+          'Paste a HTML snippet here. Be cautious as this will be rendered directly on the page.',
+        language: 'html',
+      },
+    },
+  ],
+}
+
 export const TextPage: Field = {
   name: 'content',
   label: 'Page Content',
@@ -582,6 +745,8 @@ export const TextPage: Field = {
     TextWithVideo,
     MediaGridBlock,
     VideoBlock,
+    HtmlBlock,
+    TextWithHTML,
   ],
 }
 

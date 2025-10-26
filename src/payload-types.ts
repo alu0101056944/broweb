@@ -1640,7 +1640,18 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Home {
   id: number;
-  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo | MediaGridBlock | VideoBlock)[] | null;
+  content?:
+    | (
+        | RichTextBlock
+        | ImageBlock
+        | TextWithImageBlock
+        | TextWithVideo
+        | MediaGridBlock
+        | VideoBlock
+        | HtmlBlock
+        | TextWithHTML
+      )[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1837,11 +1848,77 @@ export interface VideoBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HtmlBlock".
+ */
+export interface HtmlBlock {
+  /**
+   * Paste a HTML snippet here. Be cautious as this will be rendered directly on the page.
+   */
+  htmlContent: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'htmlBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textWithHTML".
+ */
+export interface TextWithHTML {
+  /**
+   * Paste a HTML snippet here. Be cautious as this will be rendered directly on the page.
+   */
+  htmlContent: string;
+  /**
+   * Choose how to align the html relative to the text.
+   */
+  htmlAlignment?: ('left' | 'right') | null;
+  /**
+   * % of horizontal space that the text takes relative to the video.
+   */
+  horizontalTextSpace?: number | null;
+  usePercentageBasedPadding?: boolean | null;
+  htmlPadding?: ('left' | 'center' | 'Right') | null;
+  /**
+   * % of empty margin space of the video to leave relative to the text.
+   */
+  percentageVideoPadding?: number | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'textWithHTML';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about-content".
  */
 export interface AboutContent {
   id: number;
-  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo | MediaGridBlock | VideoBlock)[] | null;
+  content?:
+    | (
+        | RichTextBlock
+        | ImageBlock
+        | TextWithImageBlock
+        | TextWithVideo
+        | MediaGridBlock
+        | VideoBlock
+        | HtmlBlock
+        | TextWithHTML
+      )[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1851,7 +1928,18 @@ export interface AboutContent {
  */
 export interface ContactContent {
   id: number;
-  content?: (RichTextBlock | ImageBlock | TextWithImageBlock | TextWithVideo | MediaGridBlock | VideoBlock)[] | null;
+  content?:
+    | (
+        | RichTextBlock
+        | ImageBlock
+        | TextWithImageBlock
+        | TextWithVideo
+        | MediaGridBlock
+        | VideoBlock
+        | HtmlBlock
+        | TextWithHTML
+      )[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1940,6 +2028,8 @@ export interface HomeSelect<T extends boolean = true> {
         textWithVideo?: T | TextWithVideoSelect<T>;
         mediaGrid?: T | MediaGridBlockSelect<T>;
         videoBlock?: T | VideoBlockSelect<T>;
+        htmlBlock?: T | HtmlBlockSelect<T>;
+        textWithHTML?: T | TextWithHTMLSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -2034,6 +2124,30 @@ export interface VideoBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HtmlBlock_select".
+ */
+export interface HtmlBlockSelect<T extends boolean = true> {
+  htmlContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textWithHTML_select".
+ */
+export interface TextWithHTMLSelect<T extends boolean = true> {
+  htmlContent?: T;
+  htmlAlignment?: T;
+  horizontalTextSpace?: T;
+  usePercentageBasedPadding?: T;
+  htmlPadding?: T;
+  percentageVideoPadding?: T;
+  description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about-content_select".
  */
 export interface AboutContentSelect<T extends boolean = true> {
@@ -2046,6 +2160,8 @@ export interface AboutContentSelect<T extends boolean = true> {
         textWithVideo?: T | TextWithVideoSelect<T>;
         mediaGrid?: T | MediaGridBlockSelect<T>;
         videoBlock?: T | VideoBlockSelect<T>;
+        htmlBlock?: T | HtmlBlockSelect<T>;
+        textWithHTML?: T | TextWithHTMLSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -2065,6 +2181,8 @@ export interface ContactContentSelect<T extends boolean = true> {
         textWithVideo?: T | TextWithVideoSelect<T>;
         mediaGrid?: T | MediaGridBlockSelect<T>;
         videoBlock?: T | VideoBlockSelect<T>;
+        htmlBlock?: T | HtmlBlockSelect<T>;
+        textWithHTML?: T | TextWithHTMLSelect<T>;
       };
   updatedAt?: T;
   createdAt?: T;
