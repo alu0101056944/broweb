@@ -1,24 +1,69 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, CollectionBeforeChangeHook } from 'payload'
+
+import sharp from 'sharp'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Archive } from '../../blocks/ArchiveBlock/config'
-import { CallToAction } from '../../blocks/CallToAction/config'
-import { Content } from '../../blocks/Content/config'
-import { FormBlock } from '../../blocks/Form/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
-import { hero } from '@/heros/config'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
 
-import {
-  MetaDescriptionField,
-  MetaImageField,
-  MetaTitleField,
-  OverviewField,
-  PreviewField,
-} from '@payloadcms/plugin-seo/fields'
+// Import your custom definitions from the previous step
+// Make sure this path points to where you saved the block definitions
+import { TextPage, ContentBlockType } from '../../TextPage/TextPage'
+
+export const addRemoteImageDimensions: CollectionBeforeChangeHook = async ({ data, req }) => {
+  if (!data.content) {
+    return data
+  }
+
+  const updated_data = await Promise.all(
+    data.content.map(async (block: ContentBlockType) => {
+      if (
+        (block.blockType === 'textWithImageBlock' || block.blockType === 'imageBlock') &&
+        block.imageUrl
+      ) {
+        try {
+          const response = await fetch(block.imageUrl)
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch image. Status: ${response.status}`)
+          }
+
+          const imageBuffer = Buffer.from(await response.arrayBuffer())
+          const metadata = await sharp(imageBuffer).metadata()
+
+          return {
+            ...block,
+            imageDimensions: {
+              width: metadata.width,
+              height: metadata.height,
+            },
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            req.payload.logger.error(
+              `[TextWithImage Hook] Error getting dimensions for ${data.imageUrl}: ${error.message}`,
+            )
+          }
+
+          return {
+            ...block,
+            imageDimensions: {
+              width: null,
+              height: null,
+            },
+          }
+        }
+      }
+      return block
+    }),
+  )
+
+  return {
+    ...data,
+    content: updated_data,
+  }
+}
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -28,71 +73,43 @@ export const Pages: CollectionConfig<'pages'> = {
     read: authenticatedOrPublished,
     update: authenticated,
   },
-  // This config controls what's populated by default when a page is referenced
-  // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
-  // Type safe if the collection slug generic is passed to `CollectionConfig` - `CollectionConfig<'pages'>
   defaultPopulate: {
-    title: true,
     slug: true,
   },
   admin: {
-    defaultColumns: ['title', 'slug', 'updatedAt'],
-    useAsTitle: 'title',
-    hidden: true,
+    defaultColumns: ['pageTitle', 'updatedAt'],
+    useAsTitle: 'pageName',
+    hidden: false,
   },
   fields: [
     {
-      name: 'title',
+      name: 'pageName',
       type: 'text',
       required: true,
+      admin: {
+        description:
+          'Es el nombre de la ruta usada para entrar a la página. ' +
+          'Si es "shop-royalties entonces se accedería por "https://davidjbarrios.com/shop-royalties/". ' +
+          'En inglés para mantener consistencia. Todo en minúsculas, sin tildes y separar espacios con -.' +
+          'Ejemplos: "shop-royalties", "blog", "3d-animations".',
+      },
+    },
+    {
+      name: 'pageTitle',
+      type: 'text',
+      required: true,
+      admin: {
+        description:
+          'Nombre a mostrar en el menú de la página y como parte del título en la pestaña ' +
+          'del navegador.',
+      },
     },
     {
       type: 'tabs',
       tabs: [
         {
-          fields: [hero],
-          label: 'Hero',
-        },
-        {
-          fields: [
-            {
-              name: 'layout',
-              type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
-              required: true,
-              admin: {
-                initCollapsed: true,
-              },
-            },
-          ],
           label: 'Content',
-        },
-        {
-          name: 'meta',
-          label: 'SEO',
-          fields: [
-            OverviewField({
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-              imagePath: 'meta.image',
-            }),
-            MetaTitleField({
-              hasGenerateFn: true,
-            }),
-            MetaImageField({
-              relationTo: 'media',
-            }),
-
-            MetaDescriptionField({}),
-            PreviewField({
-              // if the `generateUrl` function is configured
-              hasGenerateFn: true,
-
-              // field paths to match the target field for data
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-            }),
-          ],
+          fields: [TextPage],
         },
       ],
     },
@@ -106,14 +123,12 @@ export const Pages: CollectionConfig<'pages'> = {
     ...slugField(),
   ],
   hooks: {
-    afterChange: [revalidatePage],
-    beforeChange: [populatePublishedAt],
-    afterDelete: [revalidateDelete],
+    beforeChange: [populatePublishedAt, addRemoteImageDimensions],
   },
   versions: {
     drafts: {
       autosave: {
-        interval: 100, // We set this interval for optimal live preview
+        interval: 100,
       },
       schedulePublish: true,
     },

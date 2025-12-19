@@ -159,65 +159,318 @@ export interface UserAuthOperations {
  */
 export interface Page {
   id: number;
-  title: string;
-  hero: {
-    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
-    richText?: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    links?:
-      | {
-          link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?:
-              | ({
-                  relationTo: 'pages';
-                  value: number | Page;
-                } | null)
-              | ({
-                  relationTo: 'posts';
-                  value: number | Post;
-                } | null);
-            url?: string | null;
-            label: string;
-            /**
-             * Choose how the link should be rendered.
-             */
-            appearance?: ('default' | 'outline') | null;
-          };
-          id?: string | null;
-        }[]
-      | null;
-    media?: (number | null) | Media;
-  };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
+  /**
+   * Es el nombre de la ruta usada para entrar a la página. Si es "shop-royalties entonces se accedería por "https://davidjbarrios.com/shop-royalties/". En inglés para mantener consistencia. Todo en minúsculas, sin tildes y separar espacios con -.Ejemplos: "shop-royalties", "blog", "3d-animations".
+   */
+  pageName: string;
+  /**
+   * Nombre a mostrar en el menú de la página y como parte del título en la pestaña del navegador.
+   */
+  pageTitle: string;
+  content?:
+    | (
+        | RichTextBlock
+        | ImageBlock
+        | TextWithImageBlock
+        | TextWithVideo
+        | MediaGridBlock
+        | VideoBlock
+        | HtmlBlock
+        | TextWithHTML
+      )[]
+    | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock".
+ */
+export interface RichTextBlock {
+  richText?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'richTextBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock".
+ */
+export interface ImageBlock {
+  imageUrl: string;
+  /**
+   * Describe the image for screen readers and SEO.
+   */
+  altText: string;
+  /**
+   * If not specified the width will be that of the original image.
+   */
+  width?: number | null;
+  /**
+   * If not specified the height will be that of the original image.
+   */
+  height?: number | null;
+  /**
+   * Actual width and height are automatically detected and saved on publish.
+   */
+  imageDimensions?: {
+    width?: number | null;
+    height?: number | null;
+  };
+  /**
+   * Choose how to align the image within the content column.
+   */
+  alignment?: ('left' | 'center' | 'right') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'imageBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textWithImageBlock".
+ */
+export interface TextWithImageBlock {
+  imageUrl: string;
+  /**
+   * Describe the image for screen readers and SEO.
+   */
+  altText: string;
+  /**
+   * Choose how to align the image relative to the text.
+   */
+  alignment?: ('left' | 'right') | null;
+  /**
+   * % of horizontal space that the text takes relative to the video.
+   */
+  horizontalTextSpace?: number | null;
+  usePercentageBasedPadding?: boolean | null;
+  imagePadding?: ('left' | 'center' | 'Right') | null;
+  /**
+   * % of empty margin space of the image to leave relative to the text.
+   */
+  percentageImagePadding?: number | null;
+  /**
+   * Actual width and height are automatically detected and saved on publish.
+   */
+  imageDimensions?: {
+    width?: number | null;
+    height?: number | null;
+  };
+  richText?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'textWithImageBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textWithVideo".
+ */
+export interface TextWithVideo {
+  videoUrl: string;
+  /**
+   * Choose how to align the video relative to the text.
+   */
+  videoAlignment?: ('left' | 'right') | null;
+  /**
+   * % of horizontal space that the text takes relative to the video.
+   */
+  horizontalTextSpace?: number | null;
+  usePercentageBasedPadding?: boolean | null;
+  videoPadding?: ('left' | 'center' | 'Right') | null;
+  /**
+   * % of empty margin space of the video to leave relative to the text.
+   */
+  percentageVideoPadding?: number | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'textWithVideo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaGridBlock".
+ */
+export interface MediaGridBlock {
+  title?: string | null;
+  /**
+   * Select how many videos per row.
+   */
+  columns?: ('2' | '3' | '4') | null;
+  /**
+   * Select videos to display.
+   */
+  mediaItems: (
+    | {
+        relationTo: 'videos';
+        value: number | Video;
+      }
+    | {
+        relationTo: 'music';
+        value: number | Music;
+      }
+  )[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos".
+ */
+export interface Video {
+  id: number;
+  videoUrl: string;
+  description?: string | null;
+  /**
+   * Lower numbers appear first. Leave blank to send to the end of the list.
+   */
+  priority?: number | null;
+  useThumbnailUrl?: boolean | null;
+  /**
+   * Set a custom thumbnail URL. If disabled, youtube's thumbnail Url is used.
+   */
+  thumbnailUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "music".
+ */
+export interface Music {
+  id: number;
+  videoUrl: string;
+  description?: string | null;
+  /**
+   * Lower numbers appear first. Leave blank to send to the end of the list.
+   */
+  priority?: number | null;
+  useThumbnailUrl?: boolean | null;
+  /**
+   * Set a custom thumbnail URL. If disabled, youtube's thumbnail Url is used.
+   */
+  thumbnailUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock".
+ */
+export interface VideoBlock {
+  /**
+   * e.g., https://www.youtube.com/watch?v=...
+   */
+  videoUrl: string;
+  caption?: string | null;
+  /**
+   * Choose how to align the video within the content column.
+   */
+  alignment?: ('left' | 'center' | 'right') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'videoBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HtmlBlock".
+ */
+export interface HtmlBlock {
+  /**
+   * Paste a HTML snippet here. Be cautious as this will be rendered directly on the page.
+   */
+  htmlContent: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'htmlBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textWithHTML".
+ */
+export interface TextWithHTML {
+  /**
+   * Paste a HTML snippet here. Be cautious as this will be embedded directly on the page.
+   */
+  htmlContent: string;
+  /**
+   * Choose how to align the html relative to the text.
+   */
+  htmlAlignment?: ('left' | 'right') | null;
+  /**
+   * % of horizontal space that the text takes relative to the video.
+   */
+  horizontalTextSpace?: number | null;
+  usePercentageBasedPadding?: boolean | null;
+  htmlPadding?: ('left' | 'center' | 'Right') | null;
+  /**
+   * % of empty margin space of the video to leave relative to the text.
+   */
+  percentageVideoPadding?: number | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'textWithHTML';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -407,171 +660,29 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock".
+ * via the `definition` "redirects".
  */
-export interface CallToActionBlock {
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  links?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null);
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'cta';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContentBlock".
- */
-export interface ContentBlock {
-  columns?:
-    | {
-        size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
-        richText?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        enableLink?: boolean | null;
-        link?: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null);
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'content';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock".
- */
-export interface MediaBlock {
-  media: number | Media;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'mediaBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock".
- */
-export interface ArchiveBlock {
-  introContent?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
-  categories?: (number | Category)[] | null;
-  limit?: number | null;
-  selectedDocs?:
-    | {
-        relationTo: 'posts';
-        value: number | Post;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'archive';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FormBlock".
- */
-export interface FormBlock {
-  form: number | Form;
-  enableIntro?: boolean | null;
-  introContent?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'formBlock';
+export interface Redirect {
+  id: number;
+  /**
+   * You will need to rebuild the website when changing this field.
+   */
+  from: string;
+  to?: {
+    type?: ('reference' | 'custom') | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null);
+    url?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -744,72 +855,6 @@ export interface Form {
         id?: string | null;
       }[]
     | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "videos".
- */
-export interface Video {
-  id: number;
-  videoUrl: string;
-  description?: string | null;
-  /**
-   * Lower numbers appear first. Leave blank to send to the end of the list.
-   */
-  priority?: number | null;
-  useThumbnailUrl?: boolean | null;
-  /**
-   * Set a custom thumbnail URL. If disabled, youtube's thumbnail Url is used.
-   */
-  thumbnailUrl?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "music".
- */
-export interface Music {
-  id: number;
-  videoUrl: string;
-  description?: string | null;
-  /**
-   * Lower numbers appear first. Leave blank to send to the end of the list.
-   */
-  priority?: number | null;
-  useThumbnailUrl?: boolean | null;
-  /**
-   * Set a custom thumbnail URL. If disabled, youtube's thumbnail Url is used.
-   */
-  thumbnailUrl?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects".
- */
-export interface Redirect {
-  id: number;
-  /**
-   * You will need to rebuild the website when changing this field.
-   */
-  from: string;
-  to?: {
-    type?: ('reference' | 'custom') | null;
-    reference?:
-      | ({
-          relationTo: 'pages';
-          value: number | Page;
-        } | null)
-      | ({
-          relationTo: 'posts';
-          value: number | Post;
-        } | null);
-    url?: string | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1055,44 +1100,19 @@ export interface PayloadMigration {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
-  title?: T;
-  hero?:
+  pageName?: T;
+  pageTitle?: T;
+  content?:
     | T
     | {
-        type?: T;
-        richText?: T;
-        links?:
-          | T
-          | {
-              link?:
-                | T
-                | {
-                    type?: T;
-                    newTab?: T;
-                    reference?: T;
-                    url?: T;
-                    label?: T;
-                    appearance?: T;
-                  };
-              id?: T;
-            };
-        media?: T;
-      };
-  layout?:
-    | T
-    | {
-        cta?: T | CallToActionBlockSelect<T>;
-        content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
-        archive?: T | ArchiveBlockSelect<T>;
-        formBlock?: T | FormBlockSelect<T>;
-      };
-  meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
+        richTextBlock?: T | RichTextBlockSelect<T>;
+        imageBlock?: T | ImageBlockSelect<T>;
+        textWithImageBlock?: T | TextWithImageBlockSelect<T>;
+        textWithVideo?: T | TextWithVideoSelect<T>;
+        mediaGrid?: T | MediaGridBlockSelect<T>;
+        videoBlock?: T | VideoBlockSelect<T>;
+        htmlBlock?: T | HtmlBlockSelect<T>;
+        textWithHTML?: T | TextWithHTMLSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -1103,85 +1123,112 @@ export interface PagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock_select".
+ * via the `definition` "RichTextBlock_select".
  */
-export interface CallToActionBlockSelect<T extends boolean = true> {
+export interface RichTextBlockSelect<T extends boolean = true> {
   richText?: T;
-  links?:
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock_select".
+ */
+export interface ImageBlockSelect<T extends boolean = true> {
+  imageUrl?: T;
+  altText?: T;
+  width?: T;
+  height?: T;
+  imageDimensions?:
     | T
     | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
-            };
-        id?: T;
+        width?: T;
+        height?: T;
       };
+  alignment?: T;
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContentBlock_select".
+ * via the `definition` "textWithImageBlock_select".
  */
-export interface ContentBlockSelect<T extends boolean = true> {
-  columns?:
+export interface TextWithImageBlockSelect<T extends boolean = true> {
+  imageUrl?: T;
+  altText?: T;
+  alignment?: T;
+  horizontalTextSpace?: T;
+  usePercentageBasedPadding?: T;
+  imagePadding?: T;
+  percentageImagePadding?: T;
+  imageDimensions?:
     | T
     | {
-        size?: T;
-        richText?: T;
-        enableLink?: T;
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
-            };
-        id?: T;
+        width?: T;
+        height?: T;
       };
+  richText?: T;
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock_select".
+ * via the `definition` "textWithVideo_select".
  */
-export interface MediaBlockSelect<T extends boolean = true> {
-  media?: T;
+export interface TextWithVideoSelect<T extends boolean = true> {
+  videoUrl?: T;
+  videoAlignment?: T;
+  horizontalTextSpace?: T;
+  usePercentageBasedPadding?: T;
+  videoPadding?: T;
+  percentageVideoPadding?: T;
+  description?: T;
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock_select".
+ * via the `definition` "MediaGridBlock_select".
  */
-export interface ArchiveBlockSelect<T extends boolean = true> {
-  introContent?: T;
-  populateBy?: T;
-  relationTo?: T;
-  categories?: T;
-  limit?: T;
-  selectedDocs?: T;
+export interface MediaGridBlockSelect<T extends boolean = true> {
+  title?: T;
+  columns?: T;
+  mediaItems?: T;
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FormBlock_select".
+ * via the `definition` "VideoBlock_select".
  */
-export interface FormBlockSelect<T extends boolean = true> {
-  form?: T;
-  enableIntro?: T;
-  introContent?: T;
+export interface VideoBlockSelect<T extends boolean = true> {
+  videoUrl?: T;
+  caption?: T;
+  alignment?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HtmlBlock_select".
+ */
+export interface HtmlBlockSelect<T extends boolean = true> {
+  htmlContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textWithHTML_select".
+ */
+export interface TextWithHTMLSelect<T extends boolean = true> {
+  htmlContent?: T;
+  htmlAlignment?: T;
+  horizontalTextSpace?: T;
+  usePercentageBasedPadding?: T;
+  htmlPadding?: T;
+  percentageVideoPadding?: T;
+  description?: T;
   id?: T;
   blockName?: T;
 }
@@ -1657,252 +1704,6 @@ export interface Home {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RichTextBlock".
- */
-export interface RichTextBlock {
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'richTextBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ImageBlock".
- */
-export interface ImageBlock {
-  imageUrl: string;
-  /**
-   * Describe the image for screen readers and SEO.
-   */
-  altText: string;
-  /**
-   * If not specified the width will be that of the original image.
-   */
-  width?: number | null;
-  /**
-   * If not specified the height will be that of the original image.
-   */
-  height?: number | null;
-  /**
-   * Actual width and height are automatically detected and saved on publish.
-   */
-  imageDimensions?: {
-    width?: number | null;
-    height?: number | null;
-  };
-  /**
-   * Choose how to align the image within the content column.
-   */
-  alignment?: ('left' | 'center' | 'right') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'imageBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "textWithImageBlock".
- */
-export interface TextWithImageBlock {
-  imageUrl: string;
-  /**
-   * Describe the image for screen readers and SEO.
-   */
-  altText: string;
-  /**
-   * Choose how to align the image relative to the text.
-   */
-  alignment?: ('left' | 'right') | null;
-  /**
-   * % of horizontal space that the text takes relative to the video.
-   */
-  horizontalTextSpace?: number | null;
-  usePercentageBasedPadding?: boolean | null;
-  imagePadding?: ('left' | 'center' | 'Right') | null;
-  /**
-   * % of empty margin space of the image to leave relative to the text.
-   */
-  percentageImagePadding?: number | null;
-  /**
-   * Actual width and height are automatically detected and saved on publish.
-   */
-  imageDimensions?: {
-    width?: number | null;
-    height?: number | null;
-  };
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'textWithImageBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "textWithVideo".
- */
-export interface TextWithVideo {
-  videoUrl: string;
-  /**
-   * Choose how to align the video relative to the text.
-   */
-  videoAlignment?: ('left' | 'right') | null;
-  /**
-   * % of horizontal space that the text takes relative to the video.
-   */
-  horizontalTextSpace?: number | null;
-  usePercentageBasedPadding?: boolean | null;
-  videoPadding?: ('left' | 'center' | 'Right') | null;
-  /**
-   * % of empty margin space of the video to leave relative to the text.
-   */
-  percentageVideoPadding?: number | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'textWithVideo';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaGridBlock".
- */
-export interface MediaGridBlock {
-  title?: string | null;
-  /**
-   * Select how many videos per row.
-   */
-  columns?: ('2' | '3' | '4') | null;
-  /**
-   * Select videos to display.
-   */
-  mediaItems: (
-    | {
-        relationTo: 'videos';
-        value: number | Video;
-      }
-    | {
-        relationTo: 'music';
-        value: number | Music;
-      }
-  )[];
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'mediaGrid';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "VideoBlock".
- */
-export interface VideoBlock {
-  /**
-   * e.g., https://www.youtube.com/watch?v=...
-   */
-  videoUrl: string;
-  caption?: string | null;
-  /**
-   * Choose how to align the video within the content column.
-   */
-  alignment?: ('left' | 'center' | 'right') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'videoBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "HtmlBlock".
- */
-export interface HtmlBlock {
-  /**
-   * Paste a HTML snippet here. Be cautious as this will be rendered directly on the page.
-   */
-  htmlContent: string;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'htmlBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "textWithHTML".
- */
-export interface TextWithHTML {
-  /**
-   * Paste a HTML snippet here. Be cautious as this will be rendered directly on the page.
-   */
-  htmlContent: string;
-  /**
-   * Choose how to align the html relative to the text.
-   */
-  htmlAlignment?: ('left' | 'right') | null;
-  /**
-   * % of horizontal space that the text takes relative to the video.
-   */
-  horizontalTextSpace?: number | null;
-  usePercentageBasedPadding?: boolean | null;
-  htmlPadding?: ('left' | 'center' | 'Right') | null;
-  /**
-   * % of empty margin space of the video to leave relative to the text.
-   */
-  percentageVideoPadding?: number | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'textWithHTML';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about-content".
  */
 export interface AboutContent {
@@ -2034,117 +1835,6 @@ export interface HomeSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RichTextBlock_select".
- */
-export interface RichTextBlockSelect<T extends boolean = true> {
-  richText?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ImageBlock_select".
- */
-export interface ImageBlockSelect<T extends boolean = true> {
-  imageUrl?: T;
-  altText?: T;
-  width?: T;
-  height?: T;
-  imageDimensions?:
-    | T
-    | {
-        width?: T;
-        height?: T;
-      };
-  alignment?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "textWithImageBlock_select".
- */
-export interface TextWithImageBlockSelect<T extends boolean = true> {
-  imageUrl?: T;
-  altText?: T;
-  alignment?: T;
-  horizontalTextSpace?: T;
-  usePercentageBasedPadding?: T;
-  imagePadding?: T;
-  percentageImagePadding?: T;
-  imageDimensions?:
-    | T
-    | {
-        width?: T;
-        height?: T;
-      };
-  richText?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "textWithVideo_select".
- */
-export interface TextWithVideoSelect<T extends boolean = true> {
-  videoUrl?: T;
-  videoAlignment?: T;
-  horizontalTextSpace?: T;
-  usePercentageBasedPadding?: T;
-  videoPadding?: T;
-  percentageVideoPadding?: T;
-  description?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaGridBlock_select".
- */
-export interface MediaGridBlockSelect<T extends boolean = true> {
-  title?: T;
-  columns?: T;
-  mediaItems?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "VideoBlock_select".
- */
-export interface VideoBlockSelect<T extends boolean = true> {
-  videoUrl?: T;
-  caption?: T;
-  alignment?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "HtmlBlock_select".
- */
-export interface HtmlBlockSelect<T extends boolean = true> {
-  htmlContent?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "textWithHTML_select".
- */
-export interface TextWithHTMLSelect<T extends boolean = true> {
-  htmlContent?: T;
-  htmlAlignment?: T;
-  horizontalTextSpace?: T;
-  usePercentageBasedPadding?: T;
-  htmlPadding?: T;
-  percentageVideoPadding?: T;
-  description?: T;
-  id?: T;
-  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2301,6 +1991,16 @@ export interface CodeBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'code';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaBlock".
+ */
+export interface MediaBlock {
+  media: number | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
