@@ -12,13 +12,8 @@ import { ContactInfo } from './ContactInfo/ContactInfo'
 import { ContactContent } from './ContactContent/ContactContent'
 import { AboutContent } from './AboutContent/AboutContent'
 import { Videos } from './collections/Videos'
-import { Categories } from './collections/Categories'
-import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
-import { Footer } from './Footer/config'
-import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -35,39 +30,13 @@ export default buildConfig({
       // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below.
       beforeDashboard: ['@/components/BeforeDashboard'],
-      afterNavLinks: [
-        './components/DeployButton/DeployButton',
-      ],
-      actions: [
-        './components/CustomHeader/CustomHeader',
-      ]
+      afterNavLinks: ['./components/DeployButton/DeployButton'],
+      actions: ['./components/CustomHeader/CustomHeader'],
     },
     importMap: {
       baseDir: path.resolve(dirname),
     },
     user: Users.slug,
-    livePreview: {
-      breakpoints: [
-        {
-          label: 'Mobile',
-          name: 'mobile',
-          width: 375,
-          height: 667,
-        },
-        {
-          label: 'Tablet',
-          name: 'tablet',
-          width: 768,
-          height: 1024,
-        },
-        {
-          label: 'Desktop',
-          name: 'desktop',
-          width: 1440,
-          height: 900,
-        },
-      ],
-    },
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
@@ -84,16 +53,9 @@ export default buildConfig({
       },
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Videos, Music, Users],
+  collections: [Pages, Videos, Music, Users],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [
-    HomeContent,
-    AboutContent,
-    ContactContent,
-    ContactInfo,
-    Header,
-    Footer
-  ],
+  globals: [HomeContent, AboutContent, ContactContent, ContactInfo],
   plugins: [
     ...plugins,
     // storage-adapter-placeholder
@@ -124,32 +86,34 @@ export default buildConfig({
       method: 'post',
       handler: async (req) => {
         if (!req.user || req.user.collection !== 'users') {
-          return Response.json({ error: 'You are not authorized to perform this action.' });
+          return Response.json({ error: 'You are not authorized to perform this action.' })
         }
 
-        const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL;
+        const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
         if (!deployHookUrl) {
-          return Response.json({ error: 'Deploy hook URL is not configured.' });
+          return Response.json({ error: 'Deploy hook URL is not configured.' })
         }
 
         try {
-          const response = await fetch(deployHookUrl, { method: 'POST' });
+          const response = await fetch(deployHookUrl, { method: 'POST' })
           if (!response.ok) {
-            throw new Error(`Vercel API responded with status ${response.status}`);
+            throw new Error(`Vercel API responded with status ${response.status}`)
           }
-          const result = await response.json();
+          const result = await response.json()
 
           // 4. Send a success response back to the admin panel
-          return Response.json({ message: 'Deployment triggered successfully!',
-              vercelResponse: result });
+          return Response.json({
+            message: 'Deployment triggered successfully!',
+            vercelResponse: result,
+          })
         } catch (error) {
           let errorMessage = 'Failed to trigger deployment.'
 
           if (error instanceof Error) {
-            errorMessage = error.message;
+            errorMessage = error.message
           }
 
-          return Response.json({ error: error, details: errorMessage });
+          return Response.json({ error: error, details: errorMessage })
         }
       },
     },
