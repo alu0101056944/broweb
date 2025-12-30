@@ -146,13 +146,21 @@ export interface UserAuthOperations {
 export interface Page {
   id: number;
   /**
-   * Es el nombre de la ruta usada para entrar a la página. Si es "shop-royalties entonces se accedería por "https://davidjbarrios.com/shop-royalties/". En inglés para mantener consistencia. Todo en minúsculas, sin tildes y separar espacios con -.Ejemplos: "shop-royalties", "blog", "3d-animations".
+   * Name to show in the menu of the webpage and also as part of the browser's tab text.
+   */
+  pageTitle: string;
+  /**
+   * Name of the web path to enter the page. For "shop-royalties" it would be accessed via "https://davidjbarrios.com/shop-royalties/". All in lowercase, no accents, use "-" instead of whitespace.Examples: "shop-royalties", "blog", "3d-animations".
    */
   pageName: string;
   /**
-   * Nombre a mostrar en el menú de la página y como parte del título en la pestaña del navegador.
+   * Either block based made up of a sequence of blocks like textWithVideo or textWithHtml or a video grid selected from the music or video collections.
    */
-  pageTitle: string;
+  pageType: 'blockPage' | 'videoGridPage';
+  /**
+   * Lower numbers appear first in the menu.
+   */
+  priority?: number | null;
   content?:
     | (
         | RichTextBlock
@@ -165,6 +173,19 @@ export interface Page {
         | TextWithHTML
       )[]
     | null;
+  /**
+   * Select the videos to display.
+   */
+  mediaItems: (
+    | {
+        relationTo: 'videos';
+        value: number | Video;
+      }
+    | {
+        relationTo: 'music';
+        value: number | Music;
+      }
+  )[];
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -676,8 +697,10 @@ export interface PayloadMigration {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
-  pageName?: T;
   pageTitle?: T;
+  pageName?: T;
+  pageType?: T;
+  priority?: T;
   content?:
     | T
     | {
@@ -690,6 +713,7 @@ export interface PagesSelect<T extends boolean = true> {
         htmlBlock?: T | HtmlBlockSelect<T>;
         textWithHTML?: T | TextWithHTMLSelect<T>;
       };
+  mediaItems?: T;
   publishedAt?: T;
   slug?: T;
   slugLock?: T;

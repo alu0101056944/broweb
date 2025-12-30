@@ -42,13 +42,6 @@ export const Music: CollectionConfig = {
   admin: {
     defaultColumns: ['videoUrl', 'description', 'thumbnailUrl', 'priority', 'updatedAt'],
     useAsTitle: 'description',
-    // components: {
-    //   views: {
-    //     list: {
-    //       Component: '../../components/DraggableMusicList'
-    //     }
-    //   },
-    // },
   },
   fields: [
     {

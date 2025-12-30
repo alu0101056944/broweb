@@ -7,8 +7,6 @@ import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 
-// Import your custom definitions from the previous step
-// Make sure this path points to where you saved the block definitions
 import { TextPage, ContentBlockType } from '../../TextPage/TextPage'
 
 export const addRemoteImageDimensions: CollectionBeforeChangeHook = async ({ data, req }) => {
@@ -83,25 +81,58 @@ export const Pages: CollectionConfig<'pages'> = {
   },
   fields: [
     {
-      name: 'pageName',
-      type: 'text',
-      required: true,
-      admin: {
-        description:
-          'Es el nombre de la ruta usada para entrar a la página. ' +
-          'Si es "shop-royalties entonces se accedería por "https://davidjbarrios.com/shop-royalties/". ' +
-          'En inglés para mantener consistencia. Todo en minúsculas, sin tildes y separar espacios con -.' +
-          'Ejemplos: "shop-royalties", "blog", "3d-animations".',
-      },
-    },
-    {
       name: 'pageTitle',
       type: 'text',
       required: true,
       admin: {
         description:
-          'Nombre a mostrar en el menú de la página y como parte del título en la pestaña ' +
-          'del navegador.',
+          "Name to show in the menu of the webpage and also as part of the browser's tab text. ",
+      },
+    },
+    {
+      name: 'pageName',
+      type: 'text',
+      required: true,
+      admin: {
+        description:
+          'Name of the web path to enter the page. ' +
+          'For "shop-royalties" it would be accessed via "https://davidjbarrios.com/shop-royalties/". ' +
+          'All in lowercase, no accents, use "-" instead of whitespace.' +
+          'Examples: "shop-royalties", "blog", "3d-animations".',
+      },
+    },
+    {
+      name: 'pageType',
+      type: 'select',
+      required: true,
+      defaultValue: 'blockPage',
+      options: [
+        {
+          label: 'BlockPage',
+          value: 'blockPage',
+        },
+        {
+          label: 'VideoGridPage',
+          value: 'videoGridPage',
+        },
+      ],
+      admin: {
+        description:
+          'Either block based made up of a sequence of blocks like textWithVideo or textWithHtml ' +
+          'or a video grid selected from the music or video collections.',
+      },
+    },
+    {
+      name: 'priority',
+      label: 'Priority (Optional)',
+      type: 'number',
+      required: false,
+      defaultValue: 9999, // Set a high default for "no priority"
+      admin: {
+        description: 'Lower numbers appear first in the menu.',
+        placeholder: 'ejemplo: 1, 2, 3...',
+        step: 1,
+        position: 'sidebar',
       },
     },
     {
@@ -110,6 +141,28 @@ export const Pages: CollectionConfig<'pages'> = {
         {
           label: 'Content',
           fields: [TextPage],
+          admin: {
+            condition: (_, siblingData) => siblingData.pageType === 'blockPage',
+          },
+        },
+        {
+          label: 'Media to include',
+          fields: [
+            {
+              name: 'mediaItems',
+              label: 'Select Videos or Music',
+              type: 'relationship',
+              relationTo: ['videos', 'music'],
+              hasMany: true,
+              required: true,
+              admin: {
+                description: 'Select the videos to display.',
+              },
+            },
+          ],
+          admin: {
+            condition: (_, siblingData) => siblingData.pageType === 'videoGridPage',
+          },
         },
       ],
     },
