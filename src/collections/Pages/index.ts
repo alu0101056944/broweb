@@ -75,7 +75,7 @@ export const Pages: CollectionConfig<'pages'> = {
     slug: true,
   },
   admin: {
-    defaultColumns: ['pageTitle', 'pageName', 'updatedAt'],
+    defaultColumns: ['pageTitle', 'pageName', 'priority', 'updatedAt'],
     useAsTitle: 'pageTitle',
     hidden: false,
   },
