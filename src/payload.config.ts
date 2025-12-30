@@ -8,7 +8,6 @@ import { fileURLToPath } from 'url'
 
 import { HomeContent } from './HomeContent/HomeContent'
 import { Music } from './collections/Music'
-import { ContactInfo } from './ContactInfo/ContactInfo'
 import { ThemeSettings } from './ThemeSettings/ThemeSettings'
 import { Videos } from './collections/Videos'
 import { Pages } from './collections/Pages'
@@ -54,7 +53,7 @@ export default buildConfig({
   }),
   collections: [Pages, Videos, Music, Users],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [HomeContent, ContactInfo, ThemeSettings],
+  globals: [HomeContent, ThemeSettings],
   plugins: [
     ...plugins,
     // storage-adapter-placeholder
