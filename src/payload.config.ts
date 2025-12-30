@@ -11,6 +11,7 @@ import { Music } from './collections/Music'
 import { ContactInfo } from './ContactInfo/ContactInfo'
 import { ContactContent } from './ContactContent/ContactContent'
 import { AboutContent } from './AboutContent/AboutContent'
+import { ThemeSettings } from './ThemeSettings/ThemeSettings'
 import { Videos } from './collections/Videos'
 import { Pages } from './collections/Pages'
 import { Users } from './collections/Users'
@@ -55,7 +56,7 @@ export default buildConfig({
   }),
   collections: [Pages, Videos, Music, Users],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [HomeContent, AboutContent, ContactContent, ContactInfo],
+  globals: [HomeContent, AboutContent, ContactContent, ContactInfo, ThemeSettings],
   plugins: [
     ...plugins,
     // storage-adapter-placeholder

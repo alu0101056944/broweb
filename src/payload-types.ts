@@ -97,12 +97,14 @@ export interface Config {
     'about-content': AboutContent;
     'contact-content': ContactContent;
     'contact-info': ContactInfo;
+    'theme-settings': ThemeSetting;
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
     'about-content': AboutContentSelect<false> | AboutContentSelect<true>;
     'contact-content': ContactContentSelect<false> | ContactContentSelect<true>;
     'contact-info': ContactInfoSelect<false> | ContactInfoSelect<true>;
+    'theme-settings': ThemeSettingsSelect<false> | ThemeSettingsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -1015,6 +1017,32 @@ export interface ContactInfo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "theme-settings".
+ */
+export interface ThemeSetting {
+  id: number;
+  /**
+   * The main name displayed in the top left.
+   */
+  logoText: string;
+  /**
+   * The text that appears next to or under the name.
+   */
+  subText: string;
+  separatorChar?: string | null;
+  /**
+   * When columns get smaller than this, they wrap to a new row. Note: only applies when screen size is at least medium size.
+   */
+  minColumnWidthPx?: number | null;
+  /**
+   * The space between each menu item. Note: only applies when screen size is at least medium size.
+   */
+  gap?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
@@ -1082,6 +1110,20 @@ export interface ContactContentSelect<T extends boolean = true> {
  */
 export interface ContactInfoSelect<T extends boolean = true> {
   email?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "theme-settings_select".
+ */
+export interface ThemeSettingsSelect<T extends boolean = true> {
+  logoText?: T;
+  subText?: T;
+  separatorChar?: T;
+  minColumnWidthPx?: T;
+  gap?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
