@@ -28,13 +28,19 @@ export default buildConfig({
       // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below.
       beforeDashboard: ['@/components/BeforeDashboard'],
-      afterNavLinks: ['./components/DeployButton/DeployButton'],
+      beforeNavLinks: ['./components/DeployButton/DeployButton'],
       actions: ['./components/CustomHeader/CustomHeader'],
     },
     importMap: {
       baseDir: path.resolve(dirname),
     },
     user: Users.slug,
+    dependencies: {
+      homeInfoComponent: {
+        path: './components/HomeInfo/HomeInfo.tsx#default',
+        type: 'component',
+      },
+    },
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,

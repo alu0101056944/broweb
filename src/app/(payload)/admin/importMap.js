@@ -25,10 +25,11 @@ import { SubscriptFeatureClient as SubscriptFeatureClient_e70f5e05f09f93e00b997e
 import { SlugComponent as SlugComponent_92cc057d0a2abb4f6cf0307edf59f986 } from '@/fields/slug/SlugComponent'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
+import { default as default_00ee08f58d051bd0b1f5030dc9477acb } from '../../../components/HomeInfo/HomeInfo.tsx'
 import { default as default_2413f456e9d5428673db5b2bf0a1e1c9 } from '../../../components/CustomHeader/CustomHeader'
-import { default as default_643d71bc95c19e3013bba3c6e65c9526 } from '../../../components/DeployButton/DeployButton'
 import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
 import { default as default_8a7ab0eb7ab5c511aba12e68480bfe5e } from '@/components/BeforeLogin'
+import { default as default_643d71bc95c19e3013bba3c6e65c9526 } from '../../../components/DeployButton/DeployButton'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -58,8 +59,9 @@ export const importMap = {
   "@/fields/slug/SlugComponent#SlugComponent": SlugComponent_92cc057d0a2abb4f6cf0307edf59f986,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
+  "./components/HomeInfo/HomeInfo.tsx#default": default_00ee08f58d051bd0b1f5030dc9477acb,
   "./components/CustomHeader/CustomHeader#default": default_2413f456e9d5428673db5b2bf0a1e1c9,
-  "./components/DeployButton/DeployButton#default": default_643d71bc95c19e3013bba3c6e65c9526,
   "@/components/BeforeDashboard#default": default_1a7510af427896d367a49dbf838d2de6,
-  "@/components/BeforeLogin#default": default_8a7ab0eb7ab5c511aba12e68480bfe5e
+  "@/components/BeforeLogin#default": default_8a7ab0eb7ab5c511aba12e68480bfe5e,
+  "./components/DeployButton/DeployButton#default": default_643d71bc95c19e3013bba3c6e65c9526
 }

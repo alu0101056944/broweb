@@ -94,12 +94,10 @@ export interface Config {
   };
   globals: {
     home: Home;
-    'contact-info': ContactInfo;
     'theme-settings': ThemeSetting;
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
-    'contact-info': ContactInfoSelect<false> | ContactInfoSelect<true>;
     'theme-settings': ThemeSettingsSelect<false> | ThemeSettingsSelect<true>;
   };
   locale: null;
@@ -982,25 +980,12 @@ export interface Home {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-info".
- */
-export interface ContactInfo {
-  id: number;
-  /**
-   * This email address will be displayed on the contact page.
-   */
-  email: string;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "theme-settings".
  */
 export interface ThemeSetting {
   id: number;
   /**
-   * Info to add after page specific title on the brower tab. Example: Home — David J. Barrios.
+   * Text to add right after page specific title on the brower tab. Example: Home — David J. Barrios.
    */
   postfixText?: string | null;
   /**
@@ -1047,16 +1032,6 @@ export interface HomeSelect<T extends boolean = true> {
         htmlBlock?: T | HtmlBlockSelect<T>;
         textWithHTML?: T | TextWithHTMLSelect<T>;
       };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-info_select".
- */
-export interface ContactInfoSelect<T extends boolean = true> {
-  email?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
