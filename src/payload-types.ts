@@ -94,15 +94,11 @@ export interface Config {
   };
   globals: {
     home: Home;
-    'about-content': AboutContent;
-    'contact-content': ContactContent;
     'contact-info': ContactInfo;
     'theme-settings': ThemeSetting;
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
-    'about-content': AboutContentSelect<false> | AboutContentSelect<true>;
-    'contact-content': ContactContentSelect<false> | ContactContentSelect<true>;
     'contact-info': ContactInfoSelect<false> | ContactInfoSelect<true>;
     'theme-settings': ThemeSettingsSelect<false> | ThemeSettingsSelect<true>;
   };
@@ -986,48 +982,6 @@ export interface Home {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "about-content".
- */
-export interface AboutContent {
-  id: number;
-  content?:
-    | (
-        | RichTextBlock
-        | ImageBlock
-        | TextWithImageBlock
-        | TextWithVideo
-        | MediaGridBlock
-        | VideoBlock
-        | HtmlBlock
-        | TextWithHTML
-      )[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-content".
- */
-export interface ContactContent {
-  id: number;
-  content?:
-    | (
-        | RichTextBlock
-        | ImageBlock
-        | TextWithImageBlock
-        | TextWithVideo
-        | MediaGridBlock
-        | VideoBlock
-        | HtmlBlock
-        | TextWithHTML
-      )[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-info".
  */
 export interface ContactInfo {
@@ -1046,13 +1000,20 @@ export interface ContactInfo {
 export interface ThemeSetting {
   id: number;
   /**
+   * Info to add after page specific title on the brower tab. Example: Home — David J. Barrios.
+   */
+  postfixText?: string | null;
+  /**
    * The main name displayed in the top left.
    */
-  logoText: string;
+  logoText?: string | null;
   /**
    * The text that appears next to or under the name.
    */
-  subText: string;
+  subText?: string | null;
+  /**
+   * Character used to separate the main logo text and the subtext. Only shows up when in mid size screen. Ex: David J. Barrios ◆ Audiovisual producer.
+   */
   separatorChar?: string | null;
   /**
    * When columns get smaller than this, they wrap to a new row. Note: only applies when screen size is at least medium size.
@@ -1062,6 +1023,10 @@ export interface ThemeSetting {
    * The space between each menu item. Note: only applies when screen size is at least medium size.
    */
   gap?: number | null;
+  /**
+   * Text to show in the menu for the home link (which is always first in the menu).
+   */
+  homePageTitle: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1070,48 +1035,6 @@ export interface ThemeSetting {
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
-  content?:
-    | T
-    | {
-        richTextBlock?: T | RichTextBlockSelect<T>;
-        imageBlock?: T | ImageBlockSelect<T>;
-        textWithImageBlock?: T | TextWithImageBlockSelect<T>;
-        textWithVideo?: T | TextWithVideoSelect<T>;
-        mediaGrid?: T | MediaGridBlockSelect<T>;
-        videoBlock?: T | VideoBlockSelect<T>;
-        htmlBlock?: T | HtmlBlockSelect<T>;
-        textWithHTML?: T | TextWithHTMLSelect<T>;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "about-content_select".
- */
-export interface AboutContentSelect<T extends boolean = true> {
-  content?:
-    | T
-    | {
-        richTextBlock?: T | RichTextBlockSelect<T>;
-        imageBlock?: T | ImageBlockSelect<T>;
-        textWithImageBlock?: T | TextWithImageBlockSelect<T>;
-        textWithVideo?: T | TextWithVideoSelect<T>;
-        mediaGrid?: T | MediaGridBlockSelect<T>;
-        videoBlock?: T | VideoBlockSelect<T>;
-        htmlBlock?: T | HtmlBlockSelect<T>;
-        textWithHTML?: T | TextWithHTMLSelect<T>;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-content_select".
- */
-export interface ContactContentSelect<T extends boolean = true> {
   content?:
     | T
     | {
@@ -1143,11 +1066,13 @@ export interface ContactInfoSelect<T extends boolean = true> {
  * via the `definition` "theme-settings_select".
  */
 export interface ThemeSettingsSelect<T extends boolean = true> {
+  postfixText?: T;
   logoText?: T;
   subText?: T;
   separatorChar?: T;
   minColumnWidthPx?: T;
   gap?: T;
+  homePageTitle?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
