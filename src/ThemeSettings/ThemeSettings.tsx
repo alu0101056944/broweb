@@ -22,7 +22,7 @@ export const ThemeSettings: GlobalConfig = {
                   defaultValue: ' — David J. Barrios',
                   admin: {
                     description:
-                      'Info to add after page specific title on the brower tab. ' +
+                      'Text to add right after page specific title on the brower tab. ' +
                       'Example: Home — David J. Barrios.',
                   },
                 },
