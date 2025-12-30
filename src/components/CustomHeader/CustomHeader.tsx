@@ -1,16 +1,18 @@
 // src/components/admin/CustomHeaderActions.tsx
 
-import React from 'react';
+import React from 'react'
 
-import { Account, Logout } from '@payloadcms/ui';
+import { Logout } from '@payloadcms/ui'
+import DeployButton from '../DeployButton/DeployButton'
 
 const CustomHeaderActions: React.FC = () => {
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Account />
+    <div className="gap-10" style={{ display: 'flex', alignItems: 'center' }}>
+      <DeployButton />
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
       <Logout />
     </div>
-  );
-};
+  )
+}
 
-export default CustomHeaderActions;
+export default CustomHeaderActions

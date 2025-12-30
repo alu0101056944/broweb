@@ -29,7 +29,6 @@ import { default as default_00ee08f58d051bd0b1f5030dc9477acb } from '../../../co
 import { default as default_2413f456e9d5428673db5b2bf0a1e1c9 } from '../../../components/CustomHeader/CustomHeader'
 import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
 import { default as default_8a7ab0eb7ab5c511aba12e68480bfe5e } from '@/components/BeforeLogin'
-import { default as default_643d71bc95c19e3013bba3c6e65c9526 } from '../../../components/DeployButton/DeployButton'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -62,6 +61,5 @@ export const importMap = {
   "./components/HomeInfo/HomeInfo.tsx#default": default_00ee08f58d051bd0b1f5030dc9477acb,
   "./components/CustomHeader/CustomHeader#default": default_2413f456e9d5428673db5b2bf0a1e1c9,
   "@/components/BeforeDashboard#default": default_1a7510af427896d367a49dbf838d2de6,
-  "@/components/BeforeLogin#default": default_8a7ab0eb7ab5c511aba12e68480bfe5e,
-  "./components/DeployButton/DeployButton#default": default_643d71bc95c19e3013bba3c6e65c9526
+  "@/components/BeforeLogin#default": default_8a7ab0eb7ab5c511aba12e68480bfe5e
 }

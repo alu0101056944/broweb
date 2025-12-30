@@ -1,20 +1,20 @@
 'use client'
 
-import React, { useState, useCallback } from 'react';
-import { useAuth } from '@payloadcms/ui';
-import { Button } from '@payloadcms/ui';
+import React, { useState, useCallback } from 'react'
+import { useAuth } from '@payloadcms/ui'
+import { Button } from '@payloadcms/ui'
 
 export default function DeployButton() {
-  const { user } = useAuth();
+  const { user } = useAuth()
 
-  const [isDeploying, setIsDeploying] = useState(false);
-  const [message, setMessage] = useState('');
-  const [isError, setIsError] = useState(false);
+  const [isDeploying, setIsDeploying] = useState(false)
+  const [message, setMessage] = useState('')
+  const [isError, setIsError] = useState(false)
 
   const handleClick = useCallback(async () => {
-    setIsDeploying(true);
-    setMessage('');
-    setIsError(false);
+    setIsDeploying(true)
+    setMessage('')
+    setIsError(false)
 
     try {
       const res = await fetch('/api/deploy-frontend', {
@@ -22,44 +22,45 @@ export default function DeployButton() {
         headers: {
           'Content-Type': 'application/json',
         },
-      });
+      })
 
-      const data = await res.json();
+      const data = await res.json()
       if (!res.ok) {
-        throw new Error(data.error || 'Something went wrong.');
+        throw new Error(data.error || 'Something went wrong.')
       }
 
-      setMessage('🚀 Deployment started.');
+      setMessage('🚀 Deployment started.')
     } catch (err) {
       if (err instanceof Error) {
-        setMessage(`Error: ${err.message}`);
-        setIsError(true);
+        setMessage(`Error: ${err.message}`)
+        setIsError(true)
       }
     } finally {
-      setTimeout(() => setMessage(''), 10000);
-      setIsDeploying(false);
+      setTimeout(() => setMessage(''), 10000)
+      setIsDeploying(false)
     }
-  }, []);
+  }, [])
 
   if (!user) {
-    return null;
+    return null
   }
 
   return (
     <div>
-      <div style={{ marginBottom: '10px' }}>
-        <Button
-          onClick={handleClick}
-          disabled={isDeploying}
-        >
-          {isDeploying ? 'Starting deployment...' : 'Deploy Frontend'}
+      <div className="flex items-center mr-15 gap-5 h-full">
+        <Button onClick={handleClick} disabled={isDeploying} size="small" buttonStyle="secondary">
+          {isDeploying ? 'Deploying...' : 'Deploy'}
         </Button>
       </div>
       {message && (
-        <p style={{ color: isError ? 'red' : 'green', margin: 0 }}>
+        <span
+          className={`text-xs font-medium whitespace-nowrap ${
+            isError ? 'text-red-500' : 'text-green-500'
+          }`}
+        >
           {message}
-        </p>
+        </span>
       )}
     </div>
-  );
-};
+  )
+}
