@@ -75,8 +75,8 @@ export const Pages: CollectionConfig<'pages'> = {
     slug: true,
   },
   admin: {
-    defaultColumns: ['pageTitle', 'updatedAt'],
-    useAsTitle: 'pageName',
+    defaultColumns: ['pageTitle', 'pageName', 'updatedAt'],
+    useAsTitle: 'pageTitle',
     hidden: false,
   },
   fields: [
@@ -142,7 +142,7 @@ export const Pages: CollectionConfig<'pages'> = {
           label: 'Content',
           fields: [TextPage],
           admin: {
-            condition: (_, siblingData) => siblingData.pageType === 'blockPage',
+            condition: (_, siblingData) => siblingData?.pageType === 'blockPage',
           },
         },
         {
@@ -161,7 +161,7 @@ export const Pages: CollectionConfig<'pages'> = {
             },
           ],
           admin: {
-            condition: (_, siblingData) => siblingData.pageType === 'videoGridPage',
+            condition: (_, siblingData) => siblingData?.pageType === 'videoGridPage',
           },
         },
       ],
