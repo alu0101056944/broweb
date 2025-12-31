@@ -127,17 +127,13 @@ export default buildConfig({
 
         const { VERCEL_PROJECT_ID, VERCEL_TOKEN, VERCEL_TEAM_ID } = process.env
 
-        // DEBUG: Ensure Env Vars exist
-        if (!VERCEL_TOKEN || !VERCEL_PROJECT_ID) {
-          console.error('DEPLOY ERROR: Missing VERCEL_TOKEN or PROJECT_ID in Env Vars')
-          return Response.json({ status: 'ERROR', message: 'Config Missing' })
-        }
-
         try {
           const since = triggerTime - 300000
           const url = `https://api.vercel.com/v6/deployments?projectId=${VERCEL_PROJECT_ID}&since=${since}&limit=10${
             VERCEL_TEAM_ID ? `&teamId=${VERCEL_TEAM_ID}` : ''
           }`
+
+          console.log(`Url:${url}`)
 
           const res = await fetch(url, {
             headers: { Authorization: `Bearer ${VERCEL_TOKEN}` },
