@@ -118,7 +118,10 @@ export default buildConfig({
       path: '/deploy-status',
       method: 'get',
       handler: async (req) => {
-        const { searchParams } = new URL(req.url as string)
+        const { searchParams } = new URL(
+          req.url as string,
+          `http://${req.headers.get('host') || 'localhost'}`,
+        )
         const triggerTime = parseInt(searchParams.get('from') || '0')
         const hookId = searchParams.get('hookId')
 
@@ -126,17 +129,24 @@ export default buildConfig({
         const token = process.env.VERCEL_TOKEN
         const teamId = process.env.VERCEL_TEAM_ID
 
+        if (!projectId || !token) {
+          console.error('Missing Vercel Config:', { projectId: !!projectId, token: !!token })
+          return Response.json({ status: 'ERROR', message: 'Server config missing' })
+        }
+
         try {
           const since = triggerTime - 30000
-          const url = `https://api.vercel.com/v6/deployments?projectId=${projectId}&since=${since}&limit=5${teamId ? `&teamId=${teamId}` : ''}`
-          const response = await fetch(url, {
+          const vercelApiUrl = `https://api.vercel.com/v6/deployments?projectId=${projectId}&since=${since}&limit=5${teamId ? `&teamId=${teamId}` : ''}`
+          const response = await fetch(vercelApiUrl, {
             headers: { Authorization: `Bearer ${token}` },
           })
 
           const data = await response.json()
 
           const deployment = data.deployments?.find((d: any) => {
-            return d.meta?.deployHookId === hookId && d.createdAt >= triggerTime - 2000
+            const matchesHook = d.meta?.deployHookId === hookId
+            const isNew = d.createdAt >= triggerTime - 5000
+            return matchesHook && isNew
           })
 
           if (deployment) {
