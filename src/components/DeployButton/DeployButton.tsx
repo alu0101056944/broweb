@@ -1,66 +1,96 @@
 'use client'
 
-import React, { useState, useCallback } from 'react'
-import { useAuth } from '@payloadcms/ui'
-import { Button } from '@payloadcms/ui'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
+import { useAuth, Button } from '@payloadcms/ui'
+
+type Status = 'IDLE' | 'TRIGGERING' | 'BUILDING' | 'READY' | 'ERROR'
 
 export default function DeployButton() {
   const { user } = useAuth()
-
-  const [isDeploying, setIsDeploying] = useState(false)
+  const [status, setStatus] = useState<Status>('IDLE')
   const [message, setMessage] = useState('')
-  const [isError, setIsError] = useState(false)
+  const pollTimer = useRef<NodeJS.Timeout | null>(null)
 
-  const handleClick = useCallback(async () => {
-    setIsDeploying(true)
-    setMessage('')
-    setIsError(false)
+  const stopPolling = () => {
+    if (pollTimer.current) {
+      clearInterval(pollTimer.current)
+      pollTimer.current = null
+    }
+  }
 
+  const checkStatus = useCallback(async (triggerTime: number, hookId: string) => {
     try {
-      const res = await fetch('/api/deploy-frontend', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      const response = await fetch(`/api/deploy-status?from=${triggerTime}&hookId=${hookId}`)
+      const data = await response.json()
 
-      const data = await res.json()
-      if (!res.ok) {
-        throw new Error(data.error || 'Something went wrong.')
+      if (data.status === 'READY') {
+        setStatus('READY')
+        setMessage('✅ Site is Live!')
+        stopPolling()
+      } else if (['ERROR', 'CANCELED', 'FAILED'].includes(data.status)) {
+        setStatus('ERROR')
+        setMessage('❌ Deployment failed.')
+        stopPolling()
+      } else {
+        setStatus('BUILDING')
+        setMessage('🏗️ Astro is building...')
       }
-
-      setMessage('🚀 Deployment started.')
     } catch (err) {
-      if (err instanceof Error) {
-        setMessage(`Error: ${err.message}`)
-        setIsError(true)
-      }
-    } finally {
-      setTimeout(() => setMessage(''), 10000)
-      setIsDeploying(false)
+      console.error(err)
     }
   }, [])
 
-  if (!user) {
-    return null
-  }
+  const handleClick = useCallback(async () => {
+    stopPolling()
+    setStatus('TRIGGERING')
+    setMessage('Connecting to Vercel...')
+
+    try {
+      const response = await fetch('/api/deploy-frontend', { method: 'POST' })
+      const data = await response.json()
+
+      if (!response.ok) throw new Error(data.error)
+
+      pollTimer.current = setInterval(() => {
+        checkStatus(data.createdAt, data.hookId)
+      }, 5000)
+    } catch (_) {
+      setStatus('ERROR')
+      setMessage('Failed to start deployment.')
+    }
+  }, [checkStatus])
+
+  useEffect(() => {
+    return () => stopPolling()
+  }, [])
+
+  if (!user) return null
 
   return (
-    <div>
-      <div className="flex items-center mr-15 gap-5 h-full">
-        <Button onClick={handleClick} disabled={isDeploying} size="small" buttonStyle="secondary">
-          {isDeploying ? 'Deploying...' : 'Deploy'}
-        </Button>
-      </div>
-      {message && (
-        <span
-          className={`text-xs font-medium whitespace-nowrap ${
-            isError ? 'text-red-500' : 'text-green-500'
-          }`}
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-4">
+        <Button
+          onClick={handleClick}
+          disabled={status === 'TRIGGERING' || status === 'BUILDING'}
+          size="small"
+          buttonStyle="secondary"
         >
-          {message}
-        </span>
-      )}
+          {status === 'IDLE' && 'Deploy Site'}
+          {status === 'TRIGGERING' && 'Starting...'}
+          {status === 'BUILDING' && 'Building...'}
+          {status === 'READY' && 'Deploy Again'}
+          {status === 'ERROR' && 'Retry Deploy'}
+        </Button>
+        {message && (
+          <span
+            className={`text-xs font-medium whitespace-nowrap ${
+              status === 'ERROR' ? 'text-red-500' : 'text-green-500'
+            }`}
+          >
+            {message}
+          </span>
+        )}
+      </div>
     </div>
   )
 }

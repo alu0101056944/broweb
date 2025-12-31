@@ -95,29 +95,58 @@ export default buildConfig({
 
         const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
         if (!deployHookUrl) {
-          return Response.json({ error: 'Deploy hook URL is not configured.' })
+          return Response.json({ error: 'Not configured' }, { status: 500 })
         }
 
         try {
           const response = await fetch(deployHookUrl, { method: 'POST' })
-          if (!response.ok) {
-            throw new Error(`Vercel API responded with status ${response.status}`)
-          }
           const result = await response.json()
 
-          // 4. Send a success response back to the admin panel
-          return Response.json({
-            message: 'Deployment triggered successfully!',
-            vercelResponse: result,
-          })
-        } catch (error) {
-          let errorMessage = 'Failed to trigger deployment.'
+          const hookId = deployHookUrl.split('/').pop()
 
-          if (error instanceof Error) {
-            errorMessage = error.message
+          return Response.json({
+            message: 'Deployment triggered',
+            createdAt: result.job.createdAt,
+            hookId: hookId,
+          })
+        } catch (_) {
+          return Response.json({ error: 'Failed to trigger' }, { status: 500 })
+        }
+      },
+    },
+    {
+      path: '/deploy-status',
+      method: 'get',
+      handler: async (req) => {
+        const { searchParams } = new URL(req.url as string)
+        const triggerTime = parseInt(searchParams.get('from') || '0')
+        const hookId = searchParams.get('hookId')
+
+        const projectId = process.env.VERCEL_PROJECT_ID
+        const token = process.env.VERCEL_TOKEN
+        const teamId = process.env.VERCEL_TEAM_ID
+
+        try {
+          const since = triggerTime - 30000
+          const url = `https://api.vercel.com/v6/deployments?projectId=${projectId}&since=${since}&limit=5${teamId ? `&teamId=${teamId}` : ''}`
+          const response = await fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+
+          const data = await response.json()
+
+          const deployment = data.deployments?.find((d: any) => {
+            return d.meta?.deployHookId === hookId && d.createdAt >= triggerTime - 2000
+          })
+
+          if (deployment) {
+            return Response.json({ status: deployment.readyState })
           }
 
-          return Response.json({ error: error, details: errorMessage })
+          return Response.json({ status: 'INITIALIZING' })
+        } catch (error) {
+          console.error('Status check error:', error)
+          return Response.json({ status: 'ERROR' })
         }
       },
     },
