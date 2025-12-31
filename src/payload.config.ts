@@ -118,44 +118,29 @@ export default buildConfig({
       path: '/deploy-status',
       method: 'get',
       handler: async (req) => {
-        const { searchParams } = new URL(
-          req.url as string,
-          `http://${req.headers.get('host') || 'localhost'}`,
-        )
+        const { searchParams } = new URL(req.url as string, 'http://localhost')
         const triggerTime = parseInt(searchParams.get('from') || '0')
         const hookId = searchParams.get('hookId')
 
-        const projectId = process.env.VERCEL_PROJECT_ID
-        const token = process.env.VERCEL_TOKEN
-        const teamId = process.env.VERCEL_TEAM_ID
-
-        if (!projectId || !token) {
-          console.error('Missing Vercel Config:', { projectId: !!projectId, token: !!token })
-          return Response.json({ status: 'ERROR', message: 'Server config missing' })
-        }
+        const { VERCEL_PROJECT_ID, VERCEL_TOKEN, VERCEL_TEAM_ID } = process.env
 
         try {
-          const since = triggerTime - 30000
-          const vercelApiUrl = `https://api.vercel.com/v6/deployments?projectId=${projectId}&since=${since}&limit=5${teamId ? `&teamId=${teamId}` : ''}`
-          const response = await fetch(vercelApiUrl, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
+          const since = triggerTime - 10 * 60 * 1000
+          const url = `https://api.vercel.com/v6/deployments?projectId=${VERCEL_PROJECT_ID}&since=${since}&limit=10${VERCEL_TEAM_ID ? `&teamId=${VERCEL_TEAM_ID}` : ''}`
 
-          const data = await response.json()
+          const res = await fetch(url, { headers: { Authorization: `Bearer ${VERCEL_TOKEN}` } })
+          const data = await res.json()
 
-          const deployment = data.deployments?.find((d: any) => {
-            const matchesHook = d.meta?.deployHookId === hookId
-            const isNew = d.createdAt >= triggerTime - 5000
-            return matchesHook && isNew
-          })
+          const deployment = data.deployments
+            ?.filter((d: any) => d.meta?.deployHookId === hookId)
+            .sort((a: any, b: any) => b.createdAt - a.createdAt)[0]
 
-          if (deployment) {
+          if (deployment && deployment.createdAt >= triggerTime - 30000) {
             return Response.json({ status: deployment.readyState })
           }
 
-          return Response.json({ status: 'INITIALIZING' })
-        } catch (error) {
-          console.error('Status check error:', error)
+          return Response.json({ status: 'NOT_FOUND' })
+        } catch (e) {
           return Response.json({ status: 'ERROR' })
         }
       },
