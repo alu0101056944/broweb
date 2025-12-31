@@ -125,11 +125,11 @@ export default buildConfig({
         const triggerTime = parseInt(urlObj.searchParams.get('from') || '0')
         const hookId = urlObj.searchParams.get('hookId')
 
-        const { VERCEL_PROJECT_ID, VERCEL_TOKEN, VERCEL_TEAM_ID } = process.env
+        const { VERCEL_PROJECT_ID_MANUAL, VERCEL_TOKEN, VERCEL_TEAM_ID } = process.env
 
         try {
           const since = triggerTime - 300000
-          const url = `https://api.vercel.com/v6/deployments?projectId=${VERCEL_PROJECT_ID}&since=${since}&limit=10${
+          const url = `https://api.vercel.com/v6/deployments?projectId=${VERCEL_PROJECT_ID_MANUAL}&since=${since}&limit=10${
             VERCEL_TEAM_ID ? `&teamId=${VERCEL_TEAM_ID}` : ''
           }`
 
