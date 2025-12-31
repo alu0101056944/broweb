@@ -118,29 +118,68 @@ export default buildConfig({
       path: '/deploy-status',
       method: 'get',
       handler: async (req) => {
-        const { searchParams } = new URL(req.url as string, 'http://localhost')
-        const triggerTime = parseInt(searchParams.get('from') || '0')
-        const hookId = searchParams.get('hookId')
+        const urlObj = new URL(
+          req.url as string,
+          `http://${req.headers.get('host') || 'localhost'}`,
+        )
+        const triggerTime = parseInt(urlObj.searchParams.get('from') || '0')
+        const hookId = urlObj.searchParams.get('hookId')
 
         const { VERCEL_PROJECT_ID, VERCEL_TOKEN, VERCEL_TEAM_ID } = process.env
 
-        try {
-          const since = triggerTime - 10 * 60 * 1000
-          const url = `https://api.vercel.com/v6/deployments?projectId=${VERCEL_PROJECT_ID}&since=${since}&limit=10${VERCEL_TEAM_ID ? `&teamId=${VERCEL_TEAM_ID}` : ''}`
+        // DEBUG: Ensure Env Vars exist
+        if (!VERCEL_TOKEN || !VERCEL_PROJECT_ID) {
+          console.error('DEPLOY ERROR: Missing VERCEL_TOKEN or PROJECT_ID in Env Vars')
+          return Response.json({ status: 'ERROR', message: 'Config Missing' })
+        }
 
-          const res = await fetch(url, { headers: { Authorization: `Bearer ${VERCEL_TOKEN}` } })
+        try {
+          const since = triggerTime - 300000
+          const url = `https://api.vercel.com/v6/deployments?projectId=${VERCEL_PROJECT_ID}&since=${since}&limit=10${
+            VERCEL_TEAM_ID ? `&teamId=${VERCEL_TEAM_ID}` : ''
+          }`
+
+          const res = await fetch(url, {
+            headers: { Authorization: `Bearer ${VERCEL_TOKEN}` },
+          })
+
+          if (!res.ok) {
+            const errorText = await res.text()
+            console.error('VERCEL API ERROR:', res.status, errorText)
+            return Response.json({ status: 'ERROR' })
+          }
+
           const data = await res.json()
 
+          console.info(
+            `Checking builds for hook: ${hookId}. Found ${data.deployments?.length || 0} recent builds.`,
+          )
+
           const deployment = data.deployments
-            ?.filter((d: any) => d.meta?.deployHookId === hookId)
+            ?.filter((d: any) => {
+              const match = d.meta?.deployHookId === hookId
+              const isRecent = d.createdAt >= triggerTime - 60000 // 1 min grace
+              return match && isRecent
+            })
             .sort((a: any, b: any) => b.createdAt - a.createdAt)[0]
 
-          if (deployment && deployment.createdAt >= triggerTime - 30000) {
+          if (deployment) {
+            console.info(`Found match! Status: ${deployment.readyState}`)
             return Response.json({ status: deployment.readyState })
+          }
+
+          if (data.deployments?.length > 0) {
+            console.warn('Deployments found but Hook ID or Timestamp did not match.', {
+              expectedHook: hookId,
+              firstFoundHook: data.deployments[0]?.meta?.deployHookId,
+              triggerTime: triggerTime,
+              firstFoundTime: data.deployments[0]?.createdAt,
+            })
           }
 
           return Response.json({ status: 'NOT_FOUND' })
         } catch (e) {
+          console.error('DEPLOY STATUS FETCH FAILED:', e)
           return Response.json({ status: 'ERROR' })
         }
       },
