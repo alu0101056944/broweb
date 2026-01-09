@@ -31,6 +31,45 @@ export const ThemeSettings: GlobalConfig = {
                 },
               ],
             },
+            {
+              type: 'group',
+              label: 'SEO',
+              fields: [
+                {
+                  name: 'homePageDescription',
+                  label: 'Home Page Description',
+                  type: 'text',
+                  defaultValue: 'David J. Barrios Latest Released Instrumental Metal Music',
+                  required: true,
+                  admin: {
+                    description: 'Description of the home page. For SEO purposes.',
+                  },
+                },
+                {
+                  name: 'openGraphTitle',
+                  label: 'Open Graph Title',
+                  type: 'text',
+                  defaultValue: 'David J. Barrios Audiovisual Producer Portfolio',
+                  required: true,
+                  admin: {
+                    description:
+                      'Title for the card that appears when the site is linked in social media sites.',
+                  },
+                },
+                {
+                  name: 'openGraphImageURL',
+                  label: 'Open Graph ImageURL',
+                  type: 'text',
+                  required: true,
+                  defaultValue:
+                    'https://media.licdn.com/dms/image/v2/D4E2DAQEkSQSkTb8EGg/profile-treasury-image-shrink_1280_1280/B4EZtcsFLbHMAQ-/0/1766786618992?e=1768568400&v=beta&t=5Udkke3JpvnCLRFo0q5KWHlm41lIN77mhha4rBos45A',
+                  admin: {
+                    description:
+                      'Image that shows on the card that apperas when the site is linked in social media sites.',
+                  },
+                },
+              ],
+            },
           ],
         },
         {

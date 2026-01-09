@@ -136,6 +136,17 @@ export const Pages: CollectionConfig<'pages'> = {
       },
     },
     {
+      name: 'pageDescription',
+      label: 'Page Description (SEO)',
+      type: 'text',
+      required: true,
+      defaultValue: 'David J. Barrios Curriculum Summary',
+      admin: {
+        description: "Describe whats the page for. It's used for SEO optimization.",
+        position: 'sidebar',
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
         {
