@@ -162,7 +162,7 @@ export interface Page {
    */
   pageDescription: string;
   content?: {
-    content?:
+    textpageContent?:
       | (
           | RichTextBlock
           | ImageBlock
@@ -755,7 +755,7 @@ export interface PagesSelect<T extends boolean = true> {
   content?:
     | T
     | {
-        content?:
+        textpageContent?:
           | T
           | {
               richTextBlock?: T | RichTextBlockSelect<T>;
@@ -1045,7 +1045,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Home {
   id: number;
-  content?:
+  textpageContent?:
     | (
         | RichTextBlock
         | ImageBlock
@@ -1110,7 +1110,7 @@ export interface ThemeSetting {
    * How much extra space is present under the social media icons.
    */
   bottomPadding?: number | null;
-  content?:
+  textpageContent?:
     | (
         | RichTextBlock
         | ImageBlock
@@ -1130,7 +1130,7 @@ export interface ThemeSetting {
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
-  content?:
+  textpageContent?:
     | T
     | {
         richTextBlock?: T | RichTextBlockSelect<T>;
@@ -1162,7 +1162,7 @@ export interface ThemeSettingsSelect<T extends boolean = true> {
   gap?: T;
   homePageTitle?: T;
   bottomPadding?: T;
-  content?:
+  textpageContent?:
     | T
     | {
         richTextBlock?: T | RichTextBlockSelect<T>;
