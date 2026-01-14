@@ -71,6 +71,7 @@ export interface Config {
     videos: Video;
     music: Music;
     users: User;
+    socialmedia: Socialmedia;
     search: Search;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -83,6 +84,7 @@ export interface Config {
     videos: VideosSelect<false> | VideosSelect<true>;
     music: MusicSelect<false> | MusicSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    socialmedia: SocialmediaSelect<false> | SocialmediaSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -155,18 +157,24 @@ export interface Page {
    * Lower numbers appear first in the menu.
    */
   priority?: number | null;
-  content?:
-    | (
-        | RichTextBlock
-        | ImageBlock
-        | TextWithImageBlock
-        | TextWithVideo
-        | MediaGridBlock
-        | VideoBlock
-        | HtmlBlock
-        | TextWithHTML
-      )[]
-    | null;
+  /**
+   * Describe whats the page for. It's used for SEO optimization.
+   */
+  pageDescription: string;
+  content?: {
+    content?:
+      | (
+          | RichTextBlock
+          | ImageBlock
+          | TextWithImageBlock
+          | TextWithVideo
+          | MediaGridBlock
+          | VideoBlock
+          | HtmlBlock
+          | TextWithHTML
+        )[]
+      | null;
+  };
   /**
    * Select the videos to display.
    */
@@ -500,6 +508,50 @@ export interface User {
   password?: string | null;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "socialmedia".
+ */
+export interface Socialmedia {
+  id: number;
+  /**
+   * Name to show up as the text that shows up when the mouse is on top of the icon.
+   */
+  name: string;
+  /**
+   * URL to go to when clicking the icon.
+   */
+  url: string;
+  /**
+   * URL of the image to be used as icon.
+   */
+  iconUrl: string;
+  /**
+   * To force a change in size of the image url used for the icon.
+   */
+  redimensionIcon?: boolean | null;
+  /**
+   * New width of the icon (in pixels).
+   */
+  redimensionWidth?: number | null;
+  /**
+   * New height of the icon.
+   */
+  redimensionHeight?: number | null;
+  /**
+   * Lower numbers appear first. Leave blank to send to the end of the list.
+   */
+  priority?: number | null;
+  /**
+   * Actual width and height are automatically detected and saved on publish.
+   */
+  imageDimensions?: {
+    width?: number | null;
+    height?: number | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -637,6 +689,10 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'socialmedia';
+        value: number | Socialmedia;
+      } | null)
+    | ({
         relationTo: 'search';
         value: number | Search;
       } | null)
@@ -695,17 +751,22 @@ export interface PagesSelect<T extends boolean = true> {
   pageName?: T;
   pageType?: T;
   priority?: T;
+  pageDescription?: T;
   content?:
     | T
     | {
-        richTextBlock?: T | RichTextBlockSelect<T>;
-        imageBlock?: T | ImageBlockSelect<T>;
-        textWithImageBlock?: T | TextWithImageBlockSelect<T>;
-        textWithVideo?: T | TextWithVideoSelect<T>;
-        mediaGrid?: T | MediaGridBlockSelect<T>;
-        videoBlock?: T | VideoBlockSelect<T>;
-        htmlBlock?: T | HtmlBlockSelect<T>;
-        textWithHTML?: T | TextWithHTMLSelect<T>;
+        content?:
+          | T
+          | {
+              richTextBlock?: T | RichTextBlockSelect<T>;
+              imageBlock?: T | ImageBlockSelect<T>;
+              textWithImageBlock?: T | TextWithImageBlockSelect<T>;
+              textWithVideo?: T | TextWithVideoSelect<T>;
+              mediaGrid?: T | MediaGridBlockSelect<T>;
+              videoBlock?: T | VideoBlockSelect<T>;
+              htmlBlock?: T | HtmlBlockSelect<T>;
+              textWithHTML?: T | TextWithHTMLSelect<T>;
+            };
       };
   mediaItems?: T;
   publishedAt?: T;
@@ -878,6 +939,27 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "socialmedia_select".
+ */
+export interface SocialmediaSelect<T extends boolean = true> {
+  name?: T;
+  url?: T;
+  iconUrl?: T;
+  redimensionIcon?: T;
+  redimensionWidth?: T;
+  redimensionHeight?: T;
+  priority?: T;
+  imageDimensions?:
+    | T
+    | {
+        width?: T;
+        height?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "search_select".
  */
 export interface SearchSelect<T extends boolean = true> {
@@ -989,6 +1071,18 @@ export interface ThemeSetting {
    */
   postfixText?: string | null;
   /**
+   * Description of the home page. For SEO purposes.
+   */
+  homePageDescription: string;
+  /**
+   * Title for the card that appears when the site is linked in social media sites.
+   */
+  openGraphTitle: string;
+  /**
+   * Image that shows on the card that apperas when the site is linked in social media sites.
+   */
+  openGraphImageURL: string;
+  /**
    * The main name displayed in the top left.
    */
   logoText?: string | null;
@@ -1042,6 +1136,9 @@ export interface HomeSelect<T extends boolean = true> {
  */
 export interface ThemeSettingsSelect<T extends boolean = true> {
   postfixText?: T;
+  homePageDescription?: T;
+  openGraphTitle?: T;
+  openGraphImageURL?: T;
   logoText?: T;
   subText?: T;
   separatorChar?: T;

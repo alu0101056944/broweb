@@ -12,6 +12,7 @@ import { ThemeSettings } from './ThemeSettings/ThemeSettings'
 import { Videos } from './collections/Videos'
 import { Pages } from './collections/Pages'
 import { Users } from './collections/Users'
+import { SocialMedia } from './collections/SocialMedia'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -57,7 +58,7 @@ export default buildConfig({
       },
     },
   }),
-  collections: [Pages, Videos, Music, Users],
+  collections: [Pages, Videos, Music, Users, SocialMedia],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [HomeContent, ThemeSettings],
   plugins: [

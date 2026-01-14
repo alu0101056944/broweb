@@ -150,6 +150,7 @@ export const Pages: CollectionConfig<'pages'> = {
       type: 'tabs',
       tabs: [
         {
+          name: 'content',
           label: 'Content',
           fields: [TextPage],
           admin: {
