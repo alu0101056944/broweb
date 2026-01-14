@@ -8,7 +8,7 @@ export default function SocialMediaInfo() {
       <br />
       <Banner>
         <p style={{ fontSize: '0.9rem', lineHeight: '1.5' }}>
-          Each social media entry will show up on the page foot's social media reel.
+          Each social media entry will show up on the page foot&apos;s social media reel.
         </p>
       </Banner>
     </div>
