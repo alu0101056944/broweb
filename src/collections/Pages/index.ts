@@ -10,12 +10,12 @@ import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { TextPage, ContentBlockType } from '../../TextPage/TextPage'
 
 export const addRemoteImageDimensions: CollectionBeforeChangeHook = async ({ data, req }) => {
-  if (!data.textpageContent) {
+  if (!data.content.textpageContent) {
     return data
   }
 
   const updated_data = await Promise.all(
-    data.textpageContent.map(async (block: ContentBlockType) => {
+    data.content.textpageContent.map(async (block: ContentBlockType) => {
       if (
         (block.blockType === 'textWithImageBlock' || block.blockType === 'imageBlock') &&
         block.imageUrl
@@ -59,7 +59,7 @@ export const addRemoteImageDimensions: CollectionBeforeChangeHook = async ({ dat
 
   return {
     ...data,
-    textpageContent: updated_data,
+    content: { textpageContent: updated_data },
   }
 }
 
