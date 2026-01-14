@@ -735,7 +735,7 @@ const HtmlBlock: Block = {
 
 export const TextPage: Field = {
   name: 'content',
-  label: 'Page Content',
+  label: 'Content',
   type: 'blocks',
   minRows: 1,
   blocks: [

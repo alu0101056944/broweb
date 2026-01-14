@@ -1,5 +1,7 @@
 import { GlobalConfig } from 'payload'
 
+import { TextPage } from '../TextPage/TextPage'
+
 export const ThemeSettings: GlobalConfig = {
   slug: 'theme-settings',
   access: {
@@ -165,6 +167,22 @@ export const ThemeSettings: GlobalConfig = {
                 },
               ],
             },
+          ],
+        },
+        {
+          label: 'Footer',
+          fields: [
+            {
+              name: 'bottomPadding',
+              type: 'number',
+              label: 'Bottom Padding',
+              min: 0,
+              defaultValue: 30,
+              admin: {
+                description: 'How much extra space is present under the social media icons.',
+              },
+            },
+            TextPage,
           ],
         },
       ],

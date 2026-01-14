@@ -1106,6 +1106,22 @@ export interface ThemeSetting {
    * Text to show in the menu for the home link (which is always first in the menu).
    */
   homePageTitle: string;
+  /**
+   * How much extra space is present under the social media icons.
+   */
+  bottomPadding?: number | null;
+  content?:
+    | (
+        | RichTextBlock
+        | ImageBlock
+        | TextWithImageBlock
+        | TextWithVideo
+        | MediaGridBlock
+        | VideoBlock
+        | HtmlBlock
+        | TextWithHTML
+      )[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1145,6 +1161,19 @@ export interface ThemeSettingsSelect<T extends boolean = true> {
   minColumnWidthPx?: T;
   gap?: T;
   homePageTitle?: T;
+  bottomPadding?: T;
+  content?:
+    | T
+    | {
+        richTextBlock?: T | RichTextBlockSelect<T>;
+        imageBlock?: T | ImageBlockSelect<T>;
+        textWithImageBlock?: T | TextWithImageBlockSelect<T>;
+        textWithVideo?: T | TextWithVideoSelect<T>;
+        mediaGrid?: T | MediaGridBlockSelect<T>;
+        videoBlock?: T | VideoBlockSelect<T>;
+        htmlBlock?: T | HtmlBlockSelect<T>;
+        textWithHTML?: T | TextWithHTMLSelect<T>;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
