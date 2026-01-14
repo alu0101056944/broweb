@@ -751,12 +751,12 @@ export const TextPage: Field = {
 }
 
 export const addRemoteImageDimensions: GlobalBeforeChangeHook = async ({ data, req }) => {
-  if (!data.content) {
+  if (!data.textpageContent) {
     return data
   }
 
   const updated_data = await Promise.all(
-    data.content.map(async (block: ContentBlockType) => {
+    data.textpageContent.map(async (block: ContentBlockType) => {
       if (
         (block.blockType === 'textWithImageBlock' || block.blockType === 'imageBlock') &&
         block.imageUrl
@@ -800,6 +800,6 @@ export const addRemoteImageDimensions: GlobalBeforeChangeHook = async ({ data, r
 
   return {
     ...data,
-    content: updated_data,
+    textpageContent: updated_data,
   }
 }
