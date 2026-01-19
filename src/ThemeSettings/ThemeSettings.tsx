@@ -1,6 +1,47 @@
-import { GlobalConfig } from 'payload'
+import { GlobalConfig, GlobalBeforeChangeHook } from 'payload'
+
+import sharp from 'sharp'
 
 import { TextPage } from '../TextPage/TextPage'
+
+export const addRemoteImageDimensions: GlobalBeforeChangeHook = async ({ data, req }) => {
+  if (!data.useImageAsLogo) {
+    return data;
+  }
+
+  try {
+    const response = await fetch(data.logoImageUrl)
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image. Status: ${response.status}`)
+    }
+
+    const imageBuffer = Buffer.from(await response.arrayBuffer())
+    const metadata = await sharp(imageBuffer).metadata()
+
+    return {
+      ...data,
+      logoImageDimensions: {
+        logoImageWidth: metadata.width,
+        logoImageHeight: metadata.height,
+      },
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      req.payload.logger.error(
+        `[TextWithImage Hook] Error getting dimensions for ${data.imageUrl}: ${error.message}`,
+      )
+    }
+
+    return {
+      ...data,
+      logoImageDimensions: {
+        logoImagewidth: null,
+        logoImageheight: null,
+      },
+    }
+  }
+}
 
 export const ThemeSettings: GlobalConfig = {
   slug: 'theme-settings',
@@ -78,16 +119,170 @@ export const ThemeSettings: GlobalConfig = {
           label: 'Header',
           fields: [
             {
+              label: 'Segment Spacing',
+              type: 'group',
+              fields: [
+                {
+                  name: 'logoWidthPercent',
+                  type: 'number',
+                  label: 'Logo Header Segment Width %',
+                  required: true,
+                  min: 0,
+                  max: 100,
+                  defaultValue: 40,
+                  admin: {
+                    description: 'Width % of the available space of the header to be dedicated to the logo',
+                  },
+                },
+                {
+                  name: 'menuWidthPercent',
+                  type: 'number',
+                  label: 'Menu Header Segment Width %',
+                  defaultValue: 60,
+                  admin: {
+                    readOnly: true,
+                    description:
+                      'Automatically given the remaining header' +
+                      ' space after logo width % is calculated.',
+                  },
+                  hooks: {
+                    beforeValidate: [
+                      ({ siblingData }) => {
+                        if (typeof siblingData.logoWidthPercent === 'number') {
+                          return 100 - siblingData.logoWidthPercent
+                        }
+                      },
+                    ],
+                  },
+                },
+              ]
+            },
+            {
               type: 'group',
               label: 'Logo',
               fields: [
                 {
+                  name: 'useImageAsLogo',
+                  type: 'checkbox',
+                  label: 'Use Image As Logo',
+                  defaultValue: false,
+                  admin: {
+                    description: 'When active, a new width and height are asked and the actual' +
+                    ' image dimensions can be seen.',
+                  },
+                },
+                {
                   name: 'logoText',
                   type: 'text',
-                  label: 'Main Logo Text (Name)',
+                  label: 'Logo Text',
                   defaultValue: 'DAVID J. BARRIOS',
-                  required: false,
-                  admin: { description: 'The main name displayed in the top left.' },
+                  required: true,
+                  admin: {
+                    description: 'The main text displayed in the top left.',
+                    condition: (_, siblingData ) => siblingData?.useImageAsLogo === false
+                  },
+                },
+                {
+                  label: 'Logo Image Configuration',
+                  type: 'group',
+                  admin: {
+                    condition: (_, siblingData ) => siblingData?.useImageAsLogo === true
+                  },
+                  fields: [
+                    {
+                      name: 'logoImageUrl',
+                      type: 'text',
+                      label: 'Logo Image URL',
+                      required: true,
+                      admin: {
+                        description: 'The URL of the image to be used as logo.',
+                        condition: (_, siblingData ) => siblingData?.useImageAsLogo === true
+                      },
+                    },
+                    {
+                      name: 'logoImageDescription',
+                      type: 'text',
+                      label: 'Logo Image Description',
+                      required: true,
+                      defaultValue: 'Go to home',
+                      admin: {
+                        description: 'The text to show when the mouse hovers over the image.',
+                        condition: (_, siblingData ) => siblingData?.useImageAsLogo === true
+                      },
+                    },
+                    {
+                      name: 'logoImageDimensions',
+                      type: 'group',
+                      label: 'Detected Image Dimensions (auto-populated)',
+                      admin: {
+                        readOnly: true,
+                        description: 'Actual width and height are automatically detected on settings save.',
+                        condition: (_, siblingData ) => siblingData?.useImageAsLogo === true
+                      },
+                      fields: [
+                        {
+                          name: 'logoImageWidth',
+                          type: 'number',
+                        },
+                        {
+                          name: 'logoImageHeight',
+                          type: 'number',
+                        },
+                      ],
+                    },
+                    {
+                      name: 'redimensionLogoImage',
+                      type: 'checkbox',
+                      label: 'Chance Logo Image Dimensions',
+                      defaultValue: true,
+                      admin: {
+                        description: 'Whether to modify the image size to the following dimensions.',
+                        condition: (_, siblingData ) => siblingData?.useImageAsLogo === true
+                      },
+                    },
+                    {
+                      name: 'newLogoImageDimensions',
+                      type: 'group',
+                      label: 'New Image Dimensions',
+                      admin: {
+                        description: 'New width and height of the icon image.',
+                        condition: (_, siblingData ) => {
+                          return siblingData?.useImageAsLogo === true && siblingData?.redimensionLogoImage === true
+                        }
+                      },
+                      fields: [
+                        {
+                          name: 'newLogoImageWidth',
+                          type: 'number',
+                          label: 'New Logo Image Width',
+                          required: true,
+                          defaultValue: 200,
+                          min: 0,
+                          admin: {
+                            description: 'Whether to modify the image size to the following dimensions.',
+                            condition: (data, _ ) => {
+                              return data?.useImageAsLogo === true && (
+                                data?.redimensionLogoImage === true)
+                            }
+                          },
+                        },
+                        {
+                          name: 'newLogoImageHeight',
+                          type: 'number',
+                          label: 'New Logo Image Height',
+                          defaultValue: 120,
+                          required: true,
+                          min: 0,
+                          admin: {
+                            description: 'Whether to modify the image size to the following dimensions.',
+                            condition: (data, _ ) => {
+                              return data?.useImageAsLogo === true && data?.redimensionLogoImage === true
+                            }
+                          },
+                        },
+                      ],
+                    },
+                  ]
                 },
                 {
                   name: 'subText',
@@ -95,7 +290,7 @@ export const ThemeSettings: GlobalConfig = {
                   label: 'Role Subtext',
                   defaultValue: 'Audiovisual Producer',
                   required: false,
-                  admin: { description: 'The text that appears next to or under the name.' },
+                  admin: { description: 'The text that appears next to or under the main logo.' },
                 },
                 {
                   name: 'separatorChar',
@@ -105,7 +300,7 @@ export const ThemeSettings: GlobalConfig = {
                   defaultValue: '◆',
                   admin: {
                     description:
-                      'Character used to separate the main logo text and the subtext. ' +
+                      'Character used to separate the main logo and the subtext. ' +
                       'Only shows up when in mid size screen. ' +
                       'Ex: David J. Barrios ◆ Audiovisual producer.',
                   },
@@ -142,7 +337,7 @@ export const ThemeSettings: GlobalConfig = {
                       defaultValue: 0,
                       admin: {
                         description:
-                          'The space between each menu item. ' +
+                          'Extra space between each menu item. ' +
                           'Note: only applies when screen size is at least medium size.',
                       },
                     },
@@ -188,4 +383,7 @@ export const ThemeSettings: GlobalConfig = {
       ],
     },
   ],
+  hooks: {
+    beforeChange: [addRemoteImageDimensions]
+  }
 }

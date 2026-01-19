@@ -146,7 +146,7 @@ export interface Page {
    */
   pageTitle: string;
   /**
-   * Name of the web path to enter the page. For "shop-royalties" it would be accessed via "https://davidjbarrios.com/shop-royalties/". All in lowercase, no accents, use "-" instead of whitespace.Examples: "shop-royalties", "blog", "3d-animations".
+   * Name of the web path to enter the page. For "shop-royalties" it would be accessed via "https://davidjbarrios.com/shop-royalties/". All in lowercase, no accents, use "-" instead of whitespace. Examples: "shop-royalties", "blog", "3d-animations".
    */
   pageName: string;
   /**
@@ -1083,15 +1083,59 @@ export interface ThemeSetting {
    */
   openGraphImageURL: string;
   /**
-   * The main name displayed in the top left.
+   * Width % of the available space of the header to be dedicated to the logo
+   */
+  logoWidthPercent: number;
+  /**
+   * Automatically given the remaining header space after logo width % is calculated.
+   */
+  menuWidthPercent?: number | null;
+  /**
+   * When active, a new width and height are asked and the actual image dimensions can be seen.
+   */
+  useImageAsLogo?: boolean | null;
+  /**
+   * The main text displayed in the top left.
    */
   logoText?: string | null;
   /**
-   * The text that appears next to or under the name.
+   * The URL of the image to be used as logo.
+   */
+  logoImageUrl?: string | null;
+  /**
+   * The text to show when the mouse hovers over the image.
+   */
+  logoImageDescription?: string | null;
+  /**
+   * Actual width and height are automatically detected on settings save.
+   */
+  logoImageDimensions?: {
+    logoImageWidth?: number | null;
+    logoImageHeight?: number | null;
+  };
+  /**
+   * Whether to modify the image size to the following dimensions.
+   */
+  redimensionLogoImage?: boolean | null;
+  /**
+   * New width and height of the icon image.
+   */
+  newLogoImageDimensions?: {
+    /**
+     * Whether to modify the image size to the following dimensions.
+     */
+    newLogoImageWidth?: number | null;
+    /**
+     * Whether to modify the image size to the following dimensions.
+     */
+    newLogoImageHeight?: number | null;
+  };
+  /**
+   * The text that appears next to or under the main logo.
    */
   subText?: string | null;
   /**
-   * Character used to separate the main logo text and the subtext. Only shows up when in mid size screen. Ex: David J. Barrios ◆ Audiovisual producer.
+   * Character used to separate the main logo and the subtext. Only shows up when in mid size screen. Ex: David J. Barrios ◆ Audiovisual producer.
    */
   separatorChar?: string | null;
   /**
@@ -1099,7 +1143,7 @@ export interface ThemeSetting {
    */
   minColumnWidthPx?: number | null;
   /**
-   * The space between each menu item. Note: only applies when screen size is at least medium size.
+   * Extra space between each menu item. Note: only applies when screen size is at least medium size.
    */
   gap?: number | null;
   /**
@@ -1155,7 +1199,25 @@ export interface ThemeSettingsSelect<T extends boolean = true> {
   homePageDescription?: T;
   openGraphTitle?: T;
   openGraphImageURL?: T;
+  logoWidthPercent?: T;
+  menuWidthPercent?: T;
+  useImageAsLogo?: T;
   logoText?: T;
+  logoImageUrl?: T;
+  logoImageDescription?: T;
+  logoImageDimensions?:
+    | T
+    | {
+        logoImageWidth?: T;
+        logoImageHeight?: T;
+      };
+  redimensionLogoImage?: T;
+  newLogoImageDimensions?:
+    | T
+    | {
+        newLogoImageWidth?: T;
+        newLogoImageHeight?: T;
+      };
   subText?: T;
   separatorChar?: T;
   minColumnWidthPx?: T;

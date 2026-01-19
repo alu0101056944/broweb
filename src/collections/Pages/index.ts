@@ -86,7 +86,7 @@ export const Pages: CollectionConfig<'pages'> = {
       required: true,
       admin: {
         description:
-          "Name to show in the menu of the webpage and also as part of the browser's tab text. ",
+          "Name to show in the menu of the webpage and also as part of the browser's tab text.",
       },
     },
     {
@@ -97,7 +97,7 @@ export const Pages: CollectionConfig<'pages'> = {
         description:
           'Name of the web path to enter the page. ' +
           'For "shop-royalties" it would be accessed via "https://davidjbarrios.com/shop-royalties/". ' +
-          'All in lowercase, no accents, use "-" instead of whitespace.' +
+          'All in lowercase, no accents, use "-" instead of whitespace. ' +
           'Examples: "shop-royalties", "blog", "3d-animations".',
       },
     },
