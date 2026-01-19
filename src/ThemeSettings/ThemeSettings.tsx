@@ -6,7 +6,7 @@ import { TextPage } from '../TextPage/TextPage'
 
 export const addRemoteImageDimensions: GlobalBeforeChangeHook = async ({ data, req }) => {
   if (!data.useImageAsLogo) {
-    return data;
+    return data
   }
 
   try {
@@ -85,7 +85,9 @@ export const ThemeSettings: GlobalConfig = {
                   defaultValue: 'David J. Barrios Latest Released Instrumental Metal Music',
                   required: true,
                   admin: {
-                    description: 'Description of the home page. For SEO purposes.',
+                    description:
+                      'Description of the home page. For SEO purposes. Also used as social media ' +
+                      'link description (OpenGraph).',
                   },
                 },
                 {
@@ -131,7 +133,8 @@ export const ThemeSettings: GlobalConfig = {
                   max: 100,
                   defaultValue: 40,
                   admin: {
-                    description: 'Width % of the available space of the header to be dedicated to the logo',
+                    description:
+                      'Width % of the available space of the header to be dedicated to the logo',
                   },
                 },
                 {
@@ -155,7 +158,7 @@ export const ThemeSettings: GlobalConfig = {
                     ],
                   },
                 },
-              ]
+              ],
             },
             {
               type: 'group',
@@ -167,8 +170,9 @@ export const ThemeSettings: GlobalConfig = {
                   label: 'Use Image As Logo',
                   defaultValue: false,
                   admin: {
-                    description: 'When active, a new width and height are asked and the actual' +
-                    ' image dimensions can be seen.',
+                    description:
+                      'When active, an image url and description are asked and the actual' +
+                      ' image dimensions of image specified can be seen after saving.',
                   },
                 },
                 {
@@ -179,14 +183,14 @@ export const ThemeSettings: GlobalConfig = {
                   required: true,
                   admin: {
                     description: 'The main text displayed in the top left.',
-                    condition: (_, siblingData ) => siblingData?.useImageAsLogo === false
+                    condition: (_, siblingData) => siblingData?.useImageAsLogo === false,
                   },
                 },
                 {
                   label: 'Logo Image Configuration',
                   type: 'group',
                   admin: {
-                    condition: (_, siblingData ) => siblingData?.useImageAsLogo === true
+                    condition: (_, siblingData) => siblingData?.useImageAsLogo === true,
                   },
                   fields: [
                     {
@@ -196,7 +200,7 @@ export const ThemeSettings: GlobalConfig = {
                       required: true,
                       admin: {
                         description: 'The URL of the image to be used as logo.',
-                        condition: (_, siblingData ) => siblingData?.useImageAsLogo === true
+                        condition: (_, siblingData) => siblingData?.useImageAsLogo === true,
                       },
                     },
                     {
@@ -207,7 +211,7 @@ export const ThemeSettings: GlobalConfig = {
                       defaultValue: 'Go to home',
                       admin: {
                         description: 'The text to show when the mouse hovers over the image.',
-                        condition: (_, siblingData ) => siblingData?.useImageAsLogo === true
+                        condition: (_, siblingData) => siblingData?.useImageAsLogo === true,
                       },
                     },
                     {
@@ -216,8 +220,9 @@ export const ThemeSettings: GlobalConfig = {
                       label: 'Detected Image Dimensions (auto-populated)',
                       admin: {
                         readOnly: true,
-                        description: 'Actual width and height are automatically detected on settings save.',
-                        condition: (_, siblingData ) => siblingData?.useImageAsLogo === true
+                        description:
+                          'Actual width and height are automatically detected on settings save.',
+                        condition: (_, siblingData) => siblingData?.useImageAsLogo === true,
                       },
                       fields: [
                         {
@@ -236,8 +241,9 @@ export const ThemeSettings: GlobalConfig = {
                       label: 'Chance Logo Image Dimensions',
                       defaultValue: true,
                       admin: {
-                        description: 'Whether to modify the image size to the following dimensions.',
-                        condition: (_, siblingData ) => siblingData?.useImageAsLogo === true
+                        description:
+                          'Whether to modify the image size to the following dimensions.',
+                        condition: (_, siblingData) => siblingData?.useImageAsLogo === true,
                       },
                     },
                     {
@@ -246,9 +252,12 @@ export const ThemeSettings: GlobalConfig = {
                       label: 'New Image Dimensions',
                       admin: {
                         description: 'New width and height of the icon image.',
-                        condition: (_, siblingData ) => {
-                          return siblingData?.useImageAsLogo === true && siblingData?.redimensionLogoImage === true
-                        }
+                        condition: (_, siblingData) => {
+                          return (
+                            siblingData?.useImageAsLogo === true &&
+                            siblingData?.redimensionLogoImage === true
+                          )
+                        },
                       },
                       fields: [
                         {
@@ -259,11 +268,13 @@ export const ThemeSettings: GlobalConfig = {
                           defaultValue: 200,
                           min: 0,
                           admin: {
-                            description: 'Whether to modify the image size to the following dimensions.',
-                            condition: (data, _ ) => {
-                              return data?.useImageAsLogo === true && (
-                                data?.redimensionLogoImage === true)
-                            }
+                            description:
+                              'Whether to modify the image size to the following dimensions.',
+                            condition: (data, _) => {
+                              return (
+                                data?.useImageAsLogo === true && data?.redimensionLogoImage === true
+                              )
+                            },
                           },
                         },
                         {
@@ -274,15 +285,18 @@ export const ThemeSettings: GlobalConfig = {
                           required: true,
                           min: 0,
                           admin: {
-                            description: 'Whether to modify the image size to the following dimensions.',
-                            condition: (data, _ ) => {
-                              return data?.useImageAsLogo === true && data?.redimensionLogoImage === true
-                            }
+                            description:
+                              'Whether to modify the image size to the following dimensions.',
+                            condition: (data, _) => {
+                              return (
+                                data?.useImageAsLogo === true && data?.redimensionLogoImage === true
+                              )
+                            },
                           },
                         },
                       ],
                     },
-                  ]
+                  ],
                 },
                 {
                   name: 'subText',
@@ -384,6 +398,6 @@ export const ThemeSettings: GlobalConfig = {
     },
   ],
   hooks: {
-    beforeChange: [addRemoteImageDimensions]
-  }
+    beforeChange: [addRemoteImageDimensions],
+  },
 }
