@@ -70,7 +70,7 @@ export const HomeContent: GlobalConfig = {
     group: 'Static Pages',
     components: {
       elements: {
-        Description: './components/HomeInfo/HomeInfo.tsx#default',
+        Description: './components/HomeLivePreview/HomeLivePreview.tsx#default',
       },
     },
   },
