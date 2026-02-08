@@ -1071,7 +1071,7 @@ export interface ThemeSetting {
    */
   postfixText?: string | null;
   /**
-   * Description of the home page. For SEO purposes.
+   * Description of the home page. For SEO purposes. Also used as social media link description (OpenGraph).
    */
   homePageDescription: string;
   /**
@@ -1091,7 +1091,7 @@ export interface ThemeSetting {
    */
   menuWidthPercent?: number | null;
   /**
-   * When active, a new width and height are asked and the actual image dimensions can be seen.
+   * When active, an image url and description are asked and the actual image dimensions of image specified can be seen after saving.
    */
   useImageAsLogo?: boolean | null;
   /**

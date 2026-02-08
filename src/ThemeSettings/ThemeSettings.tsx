@@ -74,6 +74,7 @@ export const ThemeSettings: GlobalConfig = {
                 },
               ],
             },
+            // @TODO salvaguarda de la estructura de las urls.
             {
               type: 'group',
               label: 'SEO',
