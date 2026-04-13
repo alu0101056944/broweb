@@ -27,8 +27,20 @@ export type MediaGridBlockType = {
   blockName?: string
   title?: string
   columns?: '2' | '3' | '4'
-  mediaItems: Array<{
+  imageItems: Array<{
     relationTo: 'videos' | 'music'
+    value: VideoType | MusicType | string
+  }>
+}
+
+export type ImageGridBlockType = {
+  label: string
+  blockType: 'imageGrid'
+  blockName?: string
+  title?: string
+  columns?: '2' | '3' | '4'
+  imageItems: Array<{
+    relationTo: 'images'
     value: VideoType | MusicType | string
   }>
 }
@@ -180,7 +192,7 @@ const ImageBlock: Block = {
       defaultValue: -1,
       admin: {
         description: 'If not specified the width will be that of the original image.',
-        placeholder: 'ejemplo: 128, 200, 764...',
+        placeholder: 'Example: 128, 200, 764...',
         step: 1,
         position: 'sidebar',
       },
@@ -193,7 +205,7 @@ const ImageBlock: Block = {
       defaultValue: -1,
       admin: {
         description: 'If not specified the height will be that of the original image.',
-        placeholder: 'ejemplo: 480, 501, 652...',
+        placeholder: 'Example: 480, 501, 652...',
         step: 1,
         position: 'sidebar',
       },
@@ -293,7 +305,7 @@ const TextWithImageBlock: Block = {
       required: false,
       admin: {
         description: '% of horizontal space that the text takes relative to the video.',
-        placeholder: 'ejemplo: 25, 50, 100...',
+        placeholder: 'Example: 25, 50, 100...',
         step: 1,
         position: 'sidebar',
       },
@@ -342,7 +354,7 @@ const TextWithImageBlock: Block = {
       admin: {
         condition: (_, siblingData) => siblingData.usePercentageBasedPadding === true,
         description: '% of empty margin space of the image to leave relative to the text.',
-        placeholder: 'ejemplo: 25, 50, 100...',
+        placeholder: 'Example: 25, 50, 100...',
         step: 1,
         position: 'sidebar',
       },
@@ -431,7 +443,7 @@ const TextWithVideo: Block = {
       required: false,
       admin: {
         description: '% of horizontal space that the text takes relative to the video.',
-        placeholder: 'ejemplo: 25, 50, 100...',
+        placeholder: 'Example: 25, 50, 100...',
         step: 1,
         position: 'sidebar',
       },
@@ -480,7 +492,7 @@ const TextWithVideo: Block = {
       admin: {
         condition: (_, siblingData) => siblingData.usePercentageBasedPadding === true,
         description: '% of empty margin space of the video to leave relative to the text.',
-        placeholder: 'ejemplo: 25, 50, 100...',
+        placeholder: 'Example: 25, 50, 100...',
         step: 1,
         position: 'sidebar',
       },
@@ -538,6 +550,44 @@ const MediaGridBlock: Block = {
       label: 'Select Videos or Music',
       type: 'relationship',
       relationTo: ['videos', 'music'],
+      hasMany: true,
+      required: true,
+      admin: {
+        description: 'Select videos to display.',
+      },
+    },
+  ],
+}
+
+const ImageGridBlock: Block = {
+  slug: 'imageGrid',
+  interfaceName: 'ImageGridBlock',
+  fields: [
+    {
+      name: 'title',
+      label: 'Grid title (Optional)',
+      type: 'text',
+    },
+    {
+      name: 'columns',
+      label: 'Column number',
+      type: 'select',
+      defaultValue: '3',
+      options: [
+        { label: 'Two', value: '2' },
+        { label: 'Three', value: '3' },
+        { label: 'Four', value: '4' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Select how many videos per row.',
+      },
+    },
+    {
+      name: 'imageItems',
+      label: 'Select Videos or Music',
+      type: 'relationship',
+      relationTo: ['images'],
       hasMany: true,
       required: true,
       admin: {
@@ -637,7 +687,7 @@ const TextWithHTML: Block = {
       required: false,
       admin: {
         description: '% of horizontal space that the text takes relative to the video.',
-        placeholder: 'ejemplo: 25, 50, 100...',
+        placeholder: 'Example: 25, 50, 100...',
         step: 1,
         position: 'sidebar',
       },
@@ -686,7 +736,7 @@ const TextWithHTML: Block = {
       admin: {
         condition: (_, siblingData) => siblingData.usePercentageBasedPadding === true,
         description: '% of empty margin space of the video to leave relative to the text.',
-        placeholder: 'ejemplo: 25, 50, 100...',
+        placeholder: 'Example: 25, 50, 100...',
         step: 1,
         position: 'sidebar',
       },
@@ -744,6 +794,7 @@ export const TextPage: Field = {
     TextWithImageBlock,
     TextWithVideo,
     MediaGridBlock,
+    ImageGridBlock,
     VideoBlock,
     HtmlBlock,
     TextWithHTML,
