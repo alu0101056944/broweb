@@ -72,6 +72,7 @@ export interface Config {
     music: Music;
     users: User;
     socialmedia: Socialmedia;
+    images: Image;
     search: Search;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -85,6 +86,7 @@ export interface Config {
     music: MusicSelect<false> | MusicSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     socialmedia: SocialmediaSelect<false> | SocialmediaSelect<true>;
+    images: ImagesSelect<false> | ImagesSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -169,6 +171,7 @@ export interface Page {
           | TextWithImageBlock
           | TextWithVideo
           | MediaGridBlock
+          | ImageGridBlock
           | VideoBlock
           | HtmlBlock
           | TextWithHTML
@@ -405,6 +408,44 @@ export interface Music {
    * Set a custom thumbnail URL. If disabled, youtube's thumbnail Url is used.
    */
   thumbnailUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageGridBlock".
+ */
+export interface ImageGridBlock {
+  title?: string | null;
+  /**
+   * Select how many videos per row.
+   */
+  columns?: ('2' | '3' | '4') | null;
+  /**
+   * Select videos to display.
+   */
+  imageItems: {
+    relationTo: 'images';
+    value: number | Image;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'imageGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "images".
+ */
+export interface Image {
+  id: number;
+  imageUrl?: string | null;
+  description?: string | null;
+  imageWidth?: number | null;
+  imageHeight?: number | null;
+  /**
+   * Lower numbers appear first. Leave blank to send to the end of the list.
+   */
+  priority?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -693,6 +734,10 @@ export interface PayloadLockedDocument {
         value: number | Socialmedia;
       } | null)
     | ({
+        relationTo: 'images';
+        value: number | Image;
+      } | null)
+    | ({
         relationTo: 'search';
         value: number | Search;
       } | null)
@@ -763,6 +808,7 @@ export interface PagesSelect<T extends boolean = true> {
               textWithImageBlock?: T | TextWithImageBlockSelect<T>;
               textWithVideo?: T | TextWithVideoSelect<T>;
               mediaGrid?: T | MediaGridBlockSelect<T>;
+              imageGrid?: T | ImageGridBlockSelect<T>;
               videoBlock?: T | VideoBlockSelect<T>;
               htmlBlock?: T | HtmlBlockSelect<T>;
               textWithHTML?: T | TextWithHTMLSelect<T>;
@@ -849,6 +895,17 @@ export interface MediaGridBlockSelect<T extends boolean = true> {
   title?: T;
   columns?: T;
   mediaItems?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageGridBlock_select".
+ */
+export interface ImageGridBlockSelect<T extends boolean = true> {
+  title?: T;
+  columns?: T;
+  imageItems?: T;
   id?: T;
   blockName?: T;
 }
@@ -960,6 +1017,19 @@ export interface SocialmediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "images_select".
+ */
+export interface ImagesSelect<T extends boolean = true> {
+  imageUrl?: T;
+  description?: T;
+  imageWidth?: T;
+  imageHeight?: T;
+  priority?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "search_select".
  */
 export interface SearchSelect<T extends boolean = true> {
@@ -1052,6 +1122,7 @@ export interface Home {
         | TextWithImageBlock
         | TextWithVideo
         | MediaGridBlock
+        | ImageGridBlock
         | VideoBlock
         | HtmlBlock
         | TextWithHTML
@@ -1161,6 +1232,7 @@ export interface ThemeSetting {
         | TextWithImageBlock
         | TextWithVideo
         | MediaGridBlock
+        | ImageGridBlock
         | VideoBlock
         | HtmlBlock
         | TextWithHTML
@@ -1182,6 +1254,7 @@ export interface HomeSelect<T extends boolean = true> {
         textWithImageBlock?: T | TextWithImageBlockSelect<T>;
         textWithVideo?: T | TextWithVideoSelect<T>;
         mediaGrid?: T | MediaGridBlockSelect<T>;
+        imageGrid?: T | ImageGridBlockSelect<T>;
         videoBlock?: T | VideoBlockSelect<T>;
         htmlBlock?: T | HtmlBlockSelect<T>;
         textWithHTML?: T | TextWithHTMLSelect<T>;
@@ -1232,6 +1305,7 @@ export interface ThemeSettingsSelect<T extends boolean = true> {
         textWithImageBlock?: T | TextWithImageBlockSelect<T>;
         textWithVideo?: T | TextWithVideoSelect<T>;
         mediaGrid?: T | MediaGridBlockSelect<T>;
+        imageGrid?: T | ImageGridBlockSelect<T>;
         videoBlock?: T | VideoBlockSelect<T>;
         htmlBlock?: T | HtmlBlockSelect<T>;
         textWithHTML?: T | TextWithHTMLSelect<T>;

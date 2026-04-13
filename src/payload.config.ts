@@ -16,6 +16,7 @@ import { SocialMedia } from './collections/SocialMedia'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { Images } from './collections/Images'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -58,7 +59,7 @@ export default buildConfig({
       },
     },
   }),
-  collections: [Pages, Videos, Music, Users, SocialMedia],
+  collections: [Pages, Videos, Music, Users, SocialMedia, Images],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [HomeContent, ThemeSettings],
   plugins: [
