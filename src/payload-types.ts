@@ -440,8 +440,16 @@ export interface Image {
   id: number;
   imageUrl?: string | null;
   description?: string | null;
+  /**
+   * When this is set the final image dimensions are changed to the new specified.If left off the image dimensions are the original image dimensions extracted from the image URL.
+   */
+  changeImageDimensions?: boolean | null;
   imageWidth?: number | null;
   imageHeight?: number | null;
+  dimensions?: {
+    width?: number | null;
+    height?: number | null;
+  };
   /**
    * Lower numbers appear first. Leave blank to send to the end of the list.
    */
@@ -1022,8 +1030,15 @@ export interface SocialmediaSelect<T extends boolean = true> {
 export interface ImagesSelect<T extends boolean = true> {
   imageUrl?: T;
   description?: T;
+  changeImageDimensions?: T;
   imageWidth?: T;
   imageHeight?: T;
+  dimensions?:
+    | T
+    | {
+        width?: T;
+        height?: T;
+      };
   priority?: T;
   updatedAt?: T;
   createdAt?: T;
