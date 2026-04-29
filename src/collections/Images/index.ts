@@ -1,4 +1,6 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, CollectionBeforeChangeHook } from 'payload'
+
+import sharp from 'sharp'
 
 export interface ImageType {
   imageUrl: string
@@ -6,6 +8,41 @@ export interface ImageType {
   imageWidth: number
   imageHeight: number
   priority: number
+}
+
+export const addRemoteImageDimensions: CollectionBeforeChangeHook = async ({ data, req }) => {
+  try {
+    const response = await fetch(data.imageUrl)
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image. Status: ${response.status}`)
+    }
+
+    const imageBuffer = Buffer.from(await response.arrayBuffer())
+    const metadata = await sharp(imageBuffer).metadata()
+
+    return {
+      ...data,
+      dimensions: {
+        width: metadata.width,
+        height: metadata.height,
+      },
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      req.payload.logger.error(
+        `[Images Collection Hook] Error getting dimensions for ${data.imageUrl}: ${error.message}`,
+      )
+    }
+
+    return {
+      ...data,
+      dimensions: {
+        width: null,
+        height: null,
+      },
+    }
+  }
 }
 
 export const Images: CollectionConfig = {
@@ -46,23 +83,67 @@ export const Images: CollectionConfig = {
   fields: [
     {
       name: 'imageUrl',
-      label: 'Image Url',
+      label: 'Image URL',
       type: 'text',
       defaultValue: '',
     },
     {
       name: 'description',
+      label: 'Description',
       type: 'textarea',
     },
     {
+      name: 'changeImageDimensions',
+      label: 'Change Image Dimensions',
+      type: 'checkbox',
+      admin: {
+        description:
+          'When this is set the final image dimensions are changed to the' +
+          ' new specified.' +
+          'If left off the image dimensions are the original image dimensions extracted from the' +
+          ' image URL.',
+      },
+    },
+    {
       name: 'imageWidth',
+      label: 'Image Width',
       type: 'number',
       min: 0,
+      admin: {
+        condition: (_, siblingData) => siblingData.changeImageDimensions === true,
+      },
     },
     {
       name: 'imageHeight',
+      label: 'Image Height',
       type: 'number',
       min: 0,
+      admin: {
+        condition: (_, siblingData) => siblingData.changeImageDimensions === true,
+      },
+    },
+    {
+      name: 'dimensions',
+      label: 'Detected Image Dimensions',
+      type: 'group',
+      fields: [
+        {
+          name: 'width',
+          label: 'Width',
+          type: 'number',
+          admin: {
+            readOnly: true,
+          },
+        },
+        {
+          name: 'height',
+          label: 'Height',
+          type: 'number',
+          admin: {
+            readOnly: true,
+          },
+        },
+      ],
     },
     {
       name: 'priority',
@@ -79,4 +160,7 @@ export const Images: CollectionConfig = {
     },
   ],
   timestamps: true,
+  hooks: {
+    beforeChange: [addRemoteImageDimensions],
+  },
 }
