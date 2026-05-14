@@ -331,19 +331,6 @@ export const ThemeSettings: GlobalConfig = {
                   label: 'Layout',
                   fields: [
                     {
-                      name: 'minColumnWidthPx',
-                      type: 'number',
-                      label: 'Column Wrap Trigger (px)',
-                      min: 50,
-                      max: 400,
-                      defaultValue: 140,
-                      admin: {
-                        description:
-                          'When columns get smaller than this, they wrap to a new row. ' +
-                          'Note: only applies when screen size is at least medium size.',
-                      },
-                    },
-                    {
                       name: 'gap',
                       type: 'number',
                       label: 'Link Spacing (Gap)',

@@ -1225,10 +1225,6 @@ export interface ThemeSetting {
    */
   separatorChar?: string | null;
   /**
-   * When columns get smaller than this, they wrap to a new row. Note: only applies when screen size is at least medium size.
-   */
-  minColumnWidthPx?: number | null;
-  /**
    * Extra space between each menu item. Note: only applies when screen size is at least medium size.
    */
   gap?: number | null;
@@ -1308,7 +1304,6 @@ export interface ThemeSettingsSelect<T extends boolean = true> {
       };
   subText?: T;
   separatorChar?: T;
-  minColumnWidthPx?: T;
   gap?: T;
   homePageTitle?: T;
   bottomPadding?: T;
