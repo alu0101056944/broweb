@@ -96,6 +96,7 @@ export const Images: CollectionConfig = {
       name: 'changeImageDimensions',
       label: 'Change Image Dimensions',
       type: 'checkbox',
+      defaultValue: false,
       admin: {
         description:
           'When this is set the final image dimensions are changed to the' +
