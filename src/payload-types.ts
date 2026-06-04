@@ -418,11 +418,27 @@ export interface Music {
 export interface ImageGridBlock {
   title?: string | null;
   /**
-   * Select how many videos per row.
+   * Select how many images per row.
    */
-  columns?: ('2' | '3' | '4') | null;
+  columns?: number | null;
   /**
-   * Select videos to display.
+   * Select how many images per row.
+   */
+  columnsMediumSize?: number | null;
+  /**
+   * Select how many images per row.
+   */
+  columnsSmallSize?: number | null;
+  /**
+   * Horizontal space inbetween images in pixels (px).
+   */
+  gapX?: number | null;
+  /**
+   * Vertical space inbetween images in pixels (px).
+   */
+  gapY?: number | null;
+  /**
+   * Select images to display.
    */
   imageItems: {
     relationTo: 'images';
@@ -913,6 +929,10 @@ export interface MediaGridBlockSelect<T extends boolean = true> {
 export interface ImageGridBlockSelect<T extends boolean = true> {
   title?: T;
   columns?: T;
+  columnsMediumSize?: T;
+  columnsSmallSize?: T;
+  gapX?: T;
+  gapY?: T;
   imageItems?: T;
   id?: T;
   blockName?: T;

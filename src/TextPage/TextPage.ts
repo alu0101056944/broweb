@@ -569,30 +569,86 @@ const ImageGridBlock: Block = {
       type: 'text',
     },
     {
-      name: 'columns',
-      label: 'Column number',
-      type: 'select',
-      defaultValue: '3',
-      options: [
-        { label: 'Two', value: '2' },
-        { label: 'Three', value: '3' },
-        { label: 'Four', value: '4' },
+      label: 'Columns',
+      type: 'group',
+      fields: [
+        {
+          name: 'columns',
+          label: 'Column number for when the screen size is large',
+          type: 'number',
+          defaultValue: 3,
+          min: 0,
+          admin: {
+            position: 'sidebar',
+            description: 'Select how many images per row.',
+          },
+        },
+        {
+          name: 'columnsMediumSize',
+          label: 'Column number for when the screen size is medium',
+          type: 'number',
+          defaultValue: 2,
+          min: 0,
+          admin: {
+            position: 'sidebar',
+            description: 'Select how many images per row.',
+          },
+        },
+        {
+          name: 'columnsSmallSize',
+          label: 'Column number for when the screen size is small',
+          type: 'number',
+          defaultValue: 1,
+          min: 0,
+          admin: {
+            position: 'sidebar',
+            description: 'Select how many images per row.',
+          },
+        },
       ],
-      admin: {
-        position: 'sidebar',
-        description: 'Select how many videos per row.',
-      },
     },
     {
-      name: 'imageItems',
-      label: 'Select Videos or Music',
-      type: 'relationship',
-      relationTo: ['images'],
-      hasMany: true,
-      required: true,
-      admin: {
-        description: 'Select videos to display.',
-      },
+      label: 'Spacing',
+      type: 'group',
+      fields: [
+        {
+          name: 'gapX',
+          label: 'Horizontal Gap',
+          type: 'number',
+          min: 0,
+          defaultValue: 3,
+          admin: {
+            description: 'Horizontal space inbetween images in pixels (px).',
+          },
+        },
+        {
+          name: 'gapY',
+          label: 'Vertical Gap',
+          type: 'number',
+          min: 0,
+          defaultValue: 3,
+          admin: {
+            description: 'Vertical space inbetween images in pixels (px).',
+          },
+        },
+      ],
+    },
+    {
+      label: 'Images',
+      type: 'group',
+      fields: [
+        {
+          name: 'imageItems',
+          label: 'Select Images',
+          type: 'relationship',
+          relationTo: ['images'],
+          hasMany: true,
+          required: true,
+          admin: {
+            description: 'Select images to display.',
+          },
+        },
+      ],
     },
   ],
 }
