@@ -430,6 +430,14 @@ export interface ImageGridBlock {
    */
   columnsSmallSize?: number | null;
   /**
+   * Horizontal space inbetween images in pixels (px).
+   */
+  gapX?: number | null;
+  /**
+   * Vertical space inbetween images in pixels (px).
+   */
+  gapY?: number | null;
+  /**
    * Select images to display.
    */
   imageItems: {
@@ -923,6 +931,8 @@ export interface ImageGridBlockSelect<T extends boolean = true> {
   columns?: T;
   columnsMediumSize?: T;
   columnsSmallSize?: T;
+  gapX?: T;
+  gapY?: T;
   imageItems?: T;
   id?: T;
   blockName?: T;
